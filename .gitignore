@@ -8,3 +8,7 @@ node_modules/
 .DS_Store
 dev-dist/
 *.tsbuildinfo
+
+# Local-only planning/design docs and agent config (not part of the app)
+docs/superpowers/
+.claude/
