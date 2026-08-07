@@ -24,7 +24,7 @@ export function TripListScreen() {
         <Button onClick={() => setDialogOpen(true)}>New trip</Button>
       </header>
 
-      <TripList trips={trips} onDelete={removeTrip} />
+      <TripList trips={trips} onCreate={() => setDialogOpen(true)} onDelete={removeTrip} />
 
       <CreateTripDialog open={dialogOpen} onOpenChange={setDialogOpen} onSubmit={handleSubmit} />
     </main>
