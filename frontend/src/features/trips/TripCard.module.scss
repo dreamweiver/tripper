@@ -19,4 +19,20 @@
     font-size: 0.875rem;
     color: hsl(var(--muted-foreground));
   }
+
+  .dates {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .days {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: hsl(var(--accent-teal));
+    background: hsl(var(--accent-teal-muted));
+    padding: 0.125rem 0.5rem;
+    border-radius: 9999px;
+  }
 }

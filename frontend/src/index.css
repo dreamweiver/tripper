@@ -17,6 +17,10 @@
   --muted-foreground: 215 16% 47%;
   --destructive: 0 72% 51%;
   --destructive-foreground: 0 0% 100%;
+  /* Range-calendar accent (Wanderlog-style teal): solid endpoints + light middle span. */
+  --accent-teal: 174 62% 40%;
+  --accent-teal-foreground: 0 0% 100%;
+  --accent-teal-muted: 174 55% 90%;
 }
 
 * {

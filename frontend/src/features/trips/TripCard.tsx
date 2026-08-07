@@ -1,5 +1,5 @@
 import { Trash2 } from "lucide-react";
-import { tripTitle, type Trip } from "@tripper/shared";
+import { tripTitle, tripDayCount, type Trip } from "@tripper/shared";
 import { Button } from "../../components/ui/button";
 import { formatTripDates } from "./formatTripDates";
 import styles from "./TripCard.module.scss";
@@ -10,12 +10,18 @@ interface TripCardProps {
 }
 
 export function TripCard({ trip, onDelete }: TripCardProps) {
+  const days = tripDayCount(trip.startDate, trip.endDate);
   return (
     <article className={styles.card}>
       <div>
         <h2 className={styles.title}>{tripTitle(trip)}</h2>
         <p className={styles.meta}>{trip.destination}</p>
-        <p className={styles.meta}>{formatTripDates(trip.startDate, trip.endDate)}</p>
+        <div className={styles.dates}>
+          <p className={styles.meta}>{formatTripDates(trip.startDate, trip.endDate)}</p>
+          <span className={styles.days}>
+            {days} {days === 1 ? "day" : "days"}
+          </span>
+        </div>
       </div>
       <Button
         variant="ghost"

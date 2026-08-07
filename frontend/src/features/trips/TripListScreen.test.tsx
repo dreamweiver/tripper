@@ -10,18 +10,25 @@ beforeEach(() => {
 
 describe("TripListScreen", () => {
   it("creates a trip end-to-end and shows it in the list", async () => {
-    render(<TripListScreen />);
+    // Freeze "today" so the calendar opens on a known month with specific day cells.
+    jest.useFakeTimers({ now: new Date(2999, 2, 1) });
+    try {
+      render(<TripListScreen />);
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
 
-    expect(screen.getByText(/no trips yet/i)).toBeInTheDocument();
+      expect(screen.getByText(/no trips yet/i)).toBeInTheDocument();
 
-    await userEvent.click(screen.getByRole("button", { name: /new trip/i }));
+      await user.click(screen.getByRole("button", { name: /new trip/i }));
 
-    await userEvent.type(screen.getByLabelText(/where to/i), "Tokyo");
-    await userEvent.type(screen.getByLabelText(/start date/i), "2999-03-01");
-    await userEvent.type(screen.getByLabelText(/end date/i), "2999-03-07");
-    await userEvent.click(screen.getByRole("button", { name: /start planning/i }));
+      await user.type(screen.getByLabelText(/where to/i), "Tokyo");
+      await user.click(screen.getByRole("button", { name: /March 1st, 2999/ }));
+      await user.click(screen.getByRole("button", { name: /March 7th, 2999/ }));
+      await user.click(screen.getByRole("button", { name: /start planning/i }));
 
-    expect(await screen.findByText("Trip to Tokyo")).toBeInTheDocument();
-    expect(useTripStore.getState().trips).toHaveLength(1);
+      expect(await screen.findByText("Trip to Tokyo")).toBeInTheDocument();
+      expect(useTripStore.getState().trips).toHaveLength(1);
+    } finally {
+      jest.useRealTimers();
+    }
   });
 });

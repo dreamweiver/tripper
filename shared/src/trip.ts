@@ -19,10 +19,12 @@ export const tripInputSchema = z
     destination: z.string().trim().min(1, "Where to?"),
     name: z.string().trim().max(80).optional(),
     startDate: z
-      .string()
+      .string({ error: "Please select your trip's start and end dates" })
       .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date")
       .refine(isTodayOrFuture, "Start date can't be in the past"),
-    endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date"),
+    endDate: z
+      .string({ error: "Please select an end date to complete the range" })
+      .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date"),
   })
   .refine((d) => d.endDate >= d.startDate, {
     message: "End date must be on or after the start date",
@@ -40,4 +42,20 @@ export interface Trip extends TripInput {
 export function tripTitle(t: Pick<Trip, "name" | "destination">): string {
   const trimmed = t.name?.trim();
   return trimmed ? trimmed : `Trip to ${t.destination}`;
+}
+
+/**
+ * Inclusive trip length in days: both endpoints count, so Jan 1 → Jan 5 is 5 days.
+ * Assumes valid YYYY-MM-DD strings with endDate >= startDate.
+ */
+export function tripDayCount(startDate: string, endDate: string): number {
+  const start = Date.UTC(...ymd(startDate));
+  const end = Date.UTC(...ymd(endDate));
+  return Math.round((end - start) / 86_400_000) + 1;
+}
+
+/** Split a YYYY-MM-DD string into [year, monthIndex, day] for Date.UTC. */
+function ymd(date: string): [number, number, number] {
+  const [y, m, d] = date.split("-").map(Number);
+  return [y ?? 1970, (m ?? 1) - 1, d ?? 1];
 }

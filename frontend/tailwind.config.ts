@@ -31,6 +31,11 @@ export default {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
         },
+        teal: {
+          DEFAULT: "hsl(var(--accent-teal))",
+          foreground: "hsl(var(--accent-teal-foreground))",
+          muted: "hsl(var(--accent-teal-muted))",
+        },
       },
     },
   },

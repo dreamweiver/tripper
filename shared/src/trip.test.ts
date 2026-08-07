@@ -1,4 +1,4 @@
-import { tripInputSchema, tripTitle, isTodayOrFuture } from "./trip.js";
+import { tripInputSchema, tripTitle, isTodayOrFuture, tripDayCount } from "./trip.js";
 
 const today = new Date();
 const iso = (d: Date) =>
@@ -57,6 +57,29 @@ describe("tripInputSchema", () => {
   it("rejects an empty end date", () => {
     const r = tripInputSchema.safeParse({ ...valid, endDate: "" });
     expect(r.success).toBe(false);
+  });
+
+  it("gives a friendly message when dates are missing", () => {
+    const r = tripInputSchema.safeParse({ destination: "Paris", name: "" });
+    expect(r.success).toBe(false);
+    if (!r.success) {
+      const startIssue = r.error.issues.find((i) => i.path[0] === "startDate");
+      expect(startIssue?.message).toBe("Please select your trip's start and end dates");
+    }
+  });
+});
+
+describe("tripDayCount", () => {
+  it("counts both endpoints (inclusive)", () => {
+    expect(tripDayCount("2999-01-01", "2999-01-05")).toBe(5);
+  });
+
+  it("returns 1 for a same-day trip", () => {
+    expect(tripDayCount("2999-01-01", "2999-01-01")).toBe(1);
+  });
+
+  it("counts across a month boundary", () => {
+    expect(tripDayCount("2999-01-30", "2999-02-02")).toBe(4);
   });
 });
 

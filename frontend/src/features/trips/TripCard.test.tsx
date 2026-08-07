@@ -28,6 +28,11 @@ describe("TripCard", () => {
     expect(screen.getByText("Aug 12 – Aug 18, 2026")).toBeInTheDocument();
   });
 
+  it("shows the inclusive day count", () => {
+    render(<TripCard trip={base} onDelete={() => {}} />);
+    expect(screen.getByText("7 days")).toBeInTheDocument();
+  });
+
   it("calls onDelete with the trip id", async () => {
     const onDelete = jest.fn();
     render(<TripCard trip={base} onDelete={onDelete} />);
