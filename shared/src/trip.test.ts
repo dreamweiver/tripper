@@ -1,8 +1,4 @@
-import {
-  tripInputSchema,
-  tripTitle,
-  isTodayOrFuture,
-} from "./trip.js";
+import { tripInputSchema, tripTitle, isTodayOrFuture } from "./trip.js";
 
 const today = new Date();
 const iso = (d: Date) =>

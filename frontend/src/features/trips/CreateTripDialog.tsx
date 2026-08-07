@@ -1,10 +1,5 @@
 import type { TripInput } from "@tripper/shared";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "../../components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../components/ui/dialog";
 import { CreateTripForm } from "./CreateTripForm";
 
 interface CreateTripDialogProps {

@@ -10,8 +10,6 @@ describe("formatTripDates", () => {
   });
 
   it("formats a range spanning two years", () => {
-    expect(formatTripDates("2026-12-30", "2027-01-02")).toBe(
-      "Dec 30, 2026 – Jan 2, 2027",
-    );
+    expect(formatTripDates("2026-12-30", "2027-01-02")).toBe("Dec 30, 2026 – Jan 2, 2027");
   });
 });

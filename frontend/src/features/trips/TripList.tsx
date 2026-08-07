@@ -4,7 +4,7 @@ import { TripCard } from "./TripCard";
 
 interface TripListProps {
   trips: Trip[];
-  onCreate: () => void;
+  onCreate?: () => void;
   onDelete: (id: string) => void;
 }
 

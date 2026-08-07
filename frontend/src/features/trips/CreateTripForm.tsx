@@ -22,7 +22,11 @@ export function CreateTripForm({ onSubmit }: CreateTripFormProps) {
   } = useForm<TripInput>({ resolver: zodResolver(tripInputSchema) });
 
   return (
-    <form className="flex flex-col gap-4" onSubmit={handleSubmit((data) => onSubmit(data))} noValidate>
+    <form
+      className="flex flex-col gap-4"
+      onSubmit={handleSubmit((data) => onSubmit(data))}
+      noValidate
+    >
       <div className="flex flex-col gap-1.5">
         <label htmlFor="destination" className="text-sm font-medium">
           Where to?
@@ -45,7 +49,11 @@ export function CreateTripForm({ onSubmit }: CreateTripFormProps) {
         <label htmlFor="name" className="text-sm font-medium">
           Trip name (optional)
         </label>
-        <Input id="name" placeholder="Auto-named from destination if left blank" {...register("name")} />
+        <Input
+          id="name"
+          placeholder="Auto-named from destination if left blank"
+          {...register("name")}
+        />
       </div>
 
       <div className="flex flex-col gap-1.5">

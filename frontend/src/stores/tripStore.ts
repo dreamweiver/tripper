@@ -22,8 +22,7 @@ export const useTripStore = create<TripState>()(
         set((s) => ({ trips: [trip, ...s.trips] }));
         return trip;
       },
-      removeTrip: (id) =>
-        set((s) => ({ trips: s.trips.filter((t) => t.id !== id) })),
+      removeTrip: (id) => set((s) => ({ trips: s.trips.filter((t) => t.id !== id) })),
       getTrip: (id) => get().trips.find((t) => t.id === id),
     }),
     { name: "tripper.trips", version: 1 },
