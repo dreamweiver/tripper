@@ -5,7 +5,8 @@ import {
 } from "./trip.js";
 
 const today = new Date();
-const iso = (d: Date) => d.toISOString().slice(0, 10);
+const iso = (d: Date) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 const plusDays = (n: number) => {
   const d = new Date(today);
   d.setDate(d.getDate() + n);
@@ -50,6 +51,16 @@ describe("tripInputSchema", () => {
       endDate: plusDays(3),
     });
     expect(r.success).toBe(true);
+  });
+
+  it("rejects a malformed date string", () => {
+    const r = tripInputSchema.safeParse({ ...valid, startDate: "2026-8-6" });
+    expect(r.success).toBe(false);
+  });
+
+  it("rejects an empty end date", () => {
+    const r = tripInputSchema.safeParse({ ...valid, endDate: "" });
+    expect(r.success).toBe(false);
   });
 });
 

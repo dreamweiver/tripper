@@ -18,8 +18,11 @@ export const tripInputSchema = z
   .object({
     destination: z.string().trim().min(1, "Where to?"),
     name: z.string().trim().max(80).optional(),
-    startDate: z.string().refine(isTodayOrFuture, "Start date can't be in the past"),
-    endDate: z.string(),
+    startDate: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date")
+      .refine(isTodayOrFuture, "Start date can't be in the past"),
+    endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date"),
   })
   .refine((d) => d.endDate >= d.startDate, {
     message: "End date must be on or after the start date",
