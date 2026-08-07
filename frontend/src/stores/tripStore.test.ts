@@ -3,7 +3,6 @@ import type { TripInput } from "@tripper/shared";
 
 const input: TripInput = {
   destination: "Paris",
-  name: "",
   startDate: "2999-01-01",
   endDate: "2999-01-05",
 };
@@ -43,5 +42,21 @@ describe("tripStore", () => {
   it("persists under the tripper.trips key", () => {
     useTripStore.getState().addTrip(input);
     expect(localStorage.getItem("tripper.trips")).toContain("Paris");
+  });
+
+  it("rehydrates persisted trips from localStorage", async () => {
+    const created = useTripStore.getState().addTrip(input);
+
+    // Snapshot what persist wrote before clearing in-memory state.
+    // setState is patched by zustand persist to also write to storage, so we
+    // preserve the snapshot and restore it after wiping in-memory state.
+    const snapshot = localStorage.getItem("tripper.trips");
+    useTripStore.setState({ trips: [] });
+    localStorage.setItem("tripper.trips", snapshot!);
+    await useTripStore.persist.rehydrate();
+
+    const rehydrated = useTripStore.getState().trips;
+    expect(rehydrated).toHaveLength(1);
+    expect(rehydrated[0]?.id).toBe(created.id);
   });
 });
