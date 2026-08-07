@@ -6,7 +6,7 @@ describe("CreateTripForm", () => {
   it("shows a validation error when destination is empty on submit", async () => {
     render(<CreateTripForm onSubmit={jest.fn()} />);
     await userEvent.click(screen.getByRole("button", { name: /start planning/i }));
-    expect(await screen.findByText("Where to?")).toBeInTheDocument();
+    expect(await screen.findByLabelText(/where to/i)).toHaveAccessibleDescription("Where to?");
   });
 
   it("calls onSubmit with valid values", async () => {

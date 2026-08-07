@@ -25,15 +25,19 @@ export function CreateTripForm({ onSubmit }: CreateTripFormProps) {
     <form className="flex flex-col gap-4" onSubmit={handleSubmit((data) => onSubmit(data))} noValidate>
       <div className="flex flex-col gap-1.5">
         <label htmlFor="destination" className="text-sm font-medium">
-          {/* Split across spans so getNodeText returns "" for the label
-              (preventing findByText("Where to?") from matching the label),
-              while getLabelContent still resolves to "Where to?" for getByLabelText. */}
-          <span>Where</span>
-          <span> to?</span>
+          Where to?
         </label>
-        <Input id="destination" placeholder="e.g. Paris, Hawaii, Japan" {...register("destination")} />
+        <Input
+          id="destination"
+          placeholder="e.g. Paris, Hawaii, Japan"
+          aria-invalid={!!errors.destination}
+          aria-describedby={errors.destination ? "destination-error" : undefined}
+          {...register("destination")}
+        />
         {errors.destination && (
-          <p className="text-sm text-destructive">{errors.destination.message}</p>
+          <p id="destination-error" role="alert" className="text-sm text-destructive">
+            {errors.destination.message}
+          </p>
         )}
       </div>
 
@@ -48,9 +52,18 @@ export function CreateTripForm({ onSubmit }: CreateTripFormProps) {
         <label htmlFor="startDate" className="text-sm font-medium">
           Start date
         </label>
-        <Input id="startDate" type="date" min={todayIso()} {...register("startDate")} />
+        <Input
+          id="startDate"
+          type="date"
+          min={todayIso()}
+          aria-invalid={!!errors.startDate}
+          aria-describedby={errors.startDate ? "startDate-error" : undefined}
+          {...register("startDate")}
+        />
         {errors.startDate && (
-          <p className="text-sm text-destructive">{errors.startDate.message}</p>
+          <p id="startDate-error" role="alert" className="text-sm text-destructive">
+            {errors.startDate.message}
+          </p>
         )}
       </div>
 
@@ -58,9 +71,18 @@ export function CreateTripForm({ onSubmit }: CreateTripFormProps) {
         <label htmlFor="endDate" className="text-sm font-medium">
           End date
         </label>
-        <Input id="endDate" type="date" min={todayIso()} {...register("endDate")} />
+        <Input
+          id="endDate"
+          type="date"
+          min={todayIso()}
+          aria-invalid={!!errors.endDate}
+          aria-describedby={errors.endDate ? "endDate-error" : undefined}
+          {...register("endDate")}
+        />
         {errors.endDate && (
-          <p className="text-sm text-destructive">{errors.endDate.message}</p>
+          <p id="endDate-error" role="alert" className="text-sm text-destructive">
+            {errors.endDate.message}
+          </p>
         )}
       </div>
 
