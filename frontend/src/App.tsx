@@ -1,3 +1,5 @@
+import { TripListScreen } from "./features/trips/TripListScreen";
+
 export default function App() {
-  return <h1>Tripper</h1>;
+  return <TripListScreen />;
 }

@@ -1,7 +1,13 @@
 import { render, screen } from "@testing-library/react";
-import App from "./App.js";
+import App from "./App";
 
-test("renders the Tripper heading", () => {
-  render(<App />);
-  expect(screen.getByRole("heading", { name: /tripper/i })).toBeInTheDocument();
+beforeEach(() => {
+  localStorage.clear();
+});
+
+describe("App", () => {
+  it("renders the trip list screen", () => {
+    render(<App />);
+    expect(screen.getByRole("heading", { name: /your trips/i })).toBeInTheDocument();
+  });
 });
