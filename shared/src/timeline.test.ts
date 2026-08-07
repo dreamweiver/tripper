@@ -17,6 +17,7 @@ test("seedMeals stamps unique ids", () => {
 
 test("insertOrder returns midpoint between two neighbours", () => {
   expect(insertOrder(2, 4)).toBe(3);
+  expect(insertOrder(2, 3)).toBe(2.5);
 });
 
 test("insertOrder handles the ends", () => {

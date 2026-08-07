@@ -33,7 +33,7 @@ export function seedMeals(tripId: string, dayIndex: number): TimelineEvent[] {
     tripId,
     dayIndex,
     order: i,
-    kind: "meal" as EventKind,
+    kind: "meal",
     title: seed.title,
     time: seed.time,
     notes: [],
