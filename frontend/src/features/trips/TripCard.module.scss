@@ -8,6 +8,20 @@
   border-radius: var(--radius);
   background: hsl(var(--background));
 
+  .thumb {
+    flex-shrink: 0;
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: calc(var(--radius) - 2px);
+    background: hsl(var(--muted));
+  }
+
+  .body {
+    flex: 1;
+    min-width: 0;
+  }
+
   .title {
     margin: 0 0 0.25rem;
     font-size: 1rem;

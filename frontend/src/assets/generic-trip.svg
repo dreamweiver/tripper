@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Travel destination">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#e0f2fe"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#sky)"/>
+  <circle cx="320" cy="70" r="34" fill="#fde68a"/>
+  <path d="M0 220 L110 120 L190 200 L250 140 L400 240 L400 300 L0 300 Z" fill="#0f766e"/>
+  <path d="M120 240 L210 150 L300 240 Z" fill="#134e4a"/>
+  <path d="M195 165 L210 150 L225 165 L214 165 L214 180 L206 180 L206 165 Z" fill="#f8fafc"/>
+</svg>

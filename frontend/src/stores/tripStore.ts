@@ -6,6 +6,7 @@ interface TripState {
   trips: Trip[];
   addTrip: (input: TripInput) => Trip;
   removeTrip: (id: string) => void;
+  setTripImage: (id: string, imageUrl: string) => void;
   getTrip: (id: string) => Trip | undefined;
 }
 
@@ -23,6 +24,10 @@ export const useTripStore = create<TripState>()(
         return trip;
       },
       removeTrip: (id) => set((s) => ({ trips: s.trips.filter((t) => t.id !== id) })),
+      setTripImage: (id, imageUrl) =>
+        set((s) => ({
+          trips: s.trips.map((t) => (t.id === id ? { ...t, imageUrl } : t)),
+        })),
       getTrip: (id) => get().trips.find((t) => t.id === id),
     }),
     { name: "tripper.trips", version: 1 },

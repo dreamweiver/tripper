@@ -6,6 +6,7 @@ module.exports = {
   moduleNameMapper: {
     "^@tripper/shared$": "<rootDir>/../shared/src/index.ts",
     "\\.(scss|css)$": "identity-obj-proxy",
+    "\\.svg$": "<rootDir>/test/svgMock.ts",
     "^(\\.{1,2}/.*)\\.js$": "$1",
   },
 };
