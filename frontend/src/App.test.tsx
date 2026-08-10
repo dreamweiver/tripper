@@ -2,12 +2,15 @@ import { render, screen } from "@testing-library/react";
 import App from "./App";
 
 beforeEach(() => {
-  localStorage.clear();
+  global.fetch = jest.fn().mockResolvedValue({
+    ok: true,
+    json: async () => ({ thumbnail: { source: "https://img/x.jpg" } }),
+  }) as unknown as typeof fetch;
 });
+afterEach(() => jest.restoreAllMocks());
 
-describe("App", () => {
-  it("renders the trip list screen", () => {
-    render(<App />);
-    expect(screen.getByRole("heading", { name: /your trips/i })).toBeInTheDocument();
-  });
+test("renders the trip list at the root route", () => {
+  window.history.pushState({}, "", "/");
+  render(<App />);
+  expect(screen.getByText(/no trips yet/i)).toBeInTheDocument();
 });

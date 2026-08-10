@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { MemoryRouter } from "react-router-dom";
 import { TripListScreen } from "./TripListScreen";
 import { useTripStore } from "../../stores/tripStore";
 
@@ -23,7 +24,11 @@ describe("TripListScreen", () => {
     jest.useFakeTimers({ now: new Date(2999, 2, 1) });
     const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
 
-    render(<TripListScreen />);
+    render(
+      <MemoryRouter>
+        <TripListScreen />
+      </MemoryRouter>,
+    );
     expect(screen.getByText(/no trips yet/i)).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: /new trip/i }));

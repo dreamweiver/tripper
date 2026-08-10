@@ -1,8 +1,12 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { MemoryRouter } from "react-router-dom";
+import type { ReactElement } from "react";
 import { TripCard } from "./TripCard";
 import { useTripStore } from "../../stores/tripStore";
 import type { Trip } from "@tripper/shared";
+
+const renderCard = (ui: ReactElement) => render(<MemoryRouter>{ui}</MemoryRouter>);
 
 const base: Trip = {
   id: "t1",
@@ -27,29 +31,29 @@ afterEach(() => {
 
 describe("TripCard", () => {
   it("shows the auto-title when name is blank", () => {
-    render(<TripCard trip={base} onDelete={() => {}} />);
+    renderCard(<TripCard trip={base} onDelete={() => {}} />);
     expect(screen.getByText("Trip to Paris")).toBeInTheDocument();
   });
 
   it("shows the custom name when provided", () => {
-    render(<TripCard trip={{ ...base, name: "Honeymoon" }} onDelete={() => {}} />);
+    renderCard(<TripCard trip={{ ...base, name: "Honeymoon" }} onDelete={() => {}} />);
     expect(screen.getByText("Honeymoon")).toBeInTheDocument();
   });
 
   it("shows the formatted date range", () => {
-    render(<TripCard trip={base} onDelete={() => {}} />);
+    renderCard(<TripCard trip={base} onDelete={() => {}} />);
     expect(screen.getByText("Aug 12 – Aug 18, 2026")).toBeInTheDocument();
   });
 
   it("shows the inclusive day count", () => {
-    render(<TripCard trip={base} onDelete={() => {}} />);
+    renderCard(<TripCard trip={base} onDelete={() => {}} />);
     expect(screen.getByText("7 days")).toBeInTheDocument();
   });
 
   it("renders the cached image url without fetching", () => {
     const fetchMock = jest.fn();
     global.fetch = fetchMock as unknown as typeof fetch;
-    const { container } = render(<TripCard trip={base} onDelete={() => {}} />);
+    const { container } = renderCard(<TripCard trip={base} onDelete={() => {}} />);
     const img = container.querySelector("img");
     expect(img).toHaveAttribute("src", "https://img/paris.jpg");
     expect(fetchMock).not.toHaveBeenCalled();
@@ -64,7 +68,7 @@ describe("TripCard", () => {
     const uncached: Trip = { ...base, id: "t2", imageUrl: undefined };
     useTripStore.setState({ trips: [uncached] });
 
-    const { container } = render(<TripCard trip={uncached} onDelete={() => {}} />);
+    const { container } = renderCard(<TripCard trip={uncached} onDelete={() => {}} />);
 
     await waitFor(() => {
       expect(container.querySelector("img")).toHaveAttribute("src", "https://img/resolved.jpg");
@@ -79,7 +83,7 @@ describe("TripCard", () => {
     }) as unknown as typeof fetch;
 
     const uncached: Trip = { ...base, id: "t3", destination: "Nowhere", imageUrl: undefined };
-    const { container } = render(<TripCard trip={uncached} onDelete={() => {}} />);
+    const { container } = renderCard(<TripCard trip={uncached} onDelete={() => {}} />);
 
     await waitFor(() => {
       expect(container.querySelector("img")).toHaveAttribute("src", "test-file-stub.svg");
@@ -88,7 +92,7 @@ describe("TripCard", () => {
 
   it("calls onDelete with the trip id", async () => {
     const onDelete = jest.fn();
-    render(<TripCard trip={base} onDelete={onDelete} />);
+    renderCard(<TripCard trip={base} onDelete={onDelete} />);
     await userEvent.click(screen.getByRole("button", { name: /delete/i }));
     expect(onDelete).toHaveBeenCalledWith("t1");
   });

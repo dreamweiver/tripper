@@ -1,4 +1,5 @@
 import { Trash2 } from "lucide-react";
+import { Link } from "react-router-dom";
 import { tripTitle, tripDayCount, type Trip } from "@tripper/shared";
 import { Button } from "../../components/ui/button";
 import { formatTripDates } from "./formatTripDates";
@@ -18,25 +19,27 @@ export function TripCard({ trip, onDelete }: TripCardProps) {
 
   return (
     <article className={styles.card}>
-      <img
-        className={styles.thumb}
-        src={image.src}
-        alt=""
-        loading="lazy"
-        onError={(e) => {
-          e.currentTarget.src = genericTrip;
-        }}
-      />
-      <div className={styles.body}>
-        <h2 className={styles.title}>{title}</h2>
-        <p className={styles.meta}>{trip.destination}</p>
-        <div className={styles.dates}>
-          <p className={styles.meta}>{formatTripDates(trip.startDate, trip.endDate)}</p>
-          <span className={styles.days}>
-            {days} {days === 1 ? "day" : "days"}
-          </span>
+      <Link to={`/trips/${trip.id}`} className={styles.link}>
+        <img
+          className={styles.thumb}
+          src={image.src}
+          alt=""
+          loading="lazy"
+          onError={(e) => {
+            e.currentTarget.src = genericTrip;
+          }}
+        />
+        <div className={styles.body}>
+          <h2 className={styles.title}>{title}</h2>
+          <p className={styles.meta}>{trip.destination}</p>
+          <div className={styles.dates}>
+            <p className={styles.meta}>{formatTripDates(trip.startDate, trip.endDate)}</p>
+            <span className={styles.days}>
+              {days} {days === 1 ? "day" : "days"}
+            </span>
+          </div>
         </div>
-      </div>
+      </Link>
       <Button
         variant="ghost"
         size="icon"
