@@ -1,0 +1,36 @@
+.layout { display: flex; flex-direction: column; height: 100%; }
+.timeline { flex: 1.6; overflow: auto; padding: 10px; }
+.map { flex: 1; background: #eef3f7; display: flex; align-items: center; justify-content: center; color: #8aa; }
+.tabs { display: flex; font-size: 12px; border-bottom: 1px solid #ccc; }
+.tab { flex: 1; text-align: center; padding: 6px; cursor: pointer; }
+.tabActive { border-bottom: 2px solid #0d9488; font-weight: 600; }
+
+.dayHeader { font-size: 12px; letter-spacing: .05em; opacity: .6; margin: 12px 0 6px; }
+
+.card { border: 1px solid #ddd; border-radius: 8px; padding: 8px; display: flex; gap: 8px; }
+.cardImage { width: 48px; height: 48px; object-fit: cover; border-radius: 6px; flex: none; }
+.cardBody { flex: 1; min-width: 0; }
+.cardTitleRow { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.cardTiming { font-size: 11px; opacity: .7; }
+.outOfOrder { margin-top: 4px; font-size: 10px; color: #b45309; background: #fef3c7; border-radius: 4px; padding: 2px 6px; display: inline-block; }
+
+.mealAnchor { width: 100%; text-align: left; border: 1px dashed #f0a500; border-radius: 8px; padding: 8px; font-size: 12px; color: #b07800; background: none; cursor: pointer; }
+
+.connector { display: flex; flex-direction: column; align-items: center; position: relative; height: 30px; }
+.connectorLine { width: 0; border-left: 2px dashed #bbb; height: 100%; }
+.connectorInsert { position: absolute; top: 5px; background: #0d9488; color: #fff; width: 20px; height: 20px; border-radius: 50%; border: none; cursor: pointer; opacity: 0; transition: opacity .12s; }
+.connector:hover .connectorInsert, .connectorInsert:focus { opacity: 1; }
+
+.suggestions { margin: 10px 0; }
+.suggestionsHeading { font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+.suggestionsRow { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; }
+.suggestionsError { font-size: 12px; color: #b45309; }
+.suggestionCard { flex: 0 0 140px; border: 1px solid #ddd; border-radius: 10px; overflow: hidden; padding: 8px; }
+.suggestionImage { width: 100%; height: 80px; object-fit: cover; }
+.suggestionTitle { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.suggestionMeta { font-size: 10px; opacity: .65; margin: 2px 0 6px; }
+.skeleton { flex: 0 0 140px; height: 130px; border-radius: 10px; background: #eee; }
+
+.search { border: 1px solid #ccc; border-radius: 10px; padding: 12px; }
+.addPlace { text-align: center; margin-top: 12px; }
+.link { text-decoration: none; color: inherit; }
