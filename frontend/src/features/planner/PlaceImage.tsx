@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { usePlaceImage } from "./usePlaceImage";
 import genericTrip from "../../assets/generic-trip.svg";
 
@@ -10,7 +11,9 @@ interface PlaceImageProps {
 
 export function PlaceImage({ title, cachedUrl, className, onResolved }: PlaceImageProps) {
   const { src, status } = usePlaceImage(title, cachedUrl);
-  if (status === "resolved" && onResolved) onResolved(src);
+  useEffect(() => {
+    if (status === "resolved") onResolved?.(src);
+  }, [status, src, onResolved]);
   return (
     <img
       className={className}

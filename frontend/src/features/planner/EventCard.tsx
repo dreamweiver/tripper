@@ -1,4 +1,5 @@
 import type { DecoratedEvent } from "./hooks/usePlannerEvents";
+import { useTripStore } from "../../stores/tripStore";
 import { PlaceImage } from "./PlaceImage";
 import { NotesList } from "./NotesList";
 import styles from "./planner.module.scss";
@@ -10,12 +11,18 @@ interface EventCardProps {
 }
 
 export function EventCard({ event, onEditNotes, onRemove }: EventCardProps) {
+  const setEventImage = useTripStore((s) => s.setEventImage);
   const timing = [event.time, event.openHours ? `Open ${event.openHours}` : null, event.category]
     .filter(Boolean)
     .join(" · ");
   return (
     <div className={styles.card}>
-      <PlaceImage title={event.title} cachedUrl={event.imageUrl} className={styles.cardImage} />
+      <PlaceImage
+        title={event.title}
+        cachedUrl={event.imageUrl}
+        className={styles.cardImage}
+        onResolved={(url) => setEventImage(event.id, url)}
+      />
       <div className={styles.cardBody}>
         <div className={styles.cardTitleRow}>
           <b>{event.title}</b>

@@ -7,7 +7,6 @@ type ImageStatus = "cached" | "loading" | "resolved" | "fallback";
 interface PlaceImage {
   src: string;
   status: ImageStatus;
-  onCached?: (url: string) => void;
 }
 
 // Resolves a place thumbnail by title. If `cachedUrl` is present it is used
