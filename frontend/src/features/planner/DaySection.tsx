@@ -23,7 +23,7 @@ interface DaySectionProps {
 export function DaySection({ tripId, dayIndex, date, destination }: DaySectionProps) {
   const days = usePlannerEvents(tripId, dayIndex + 1);
   const day = days[dayIndex];
-  const events = day ? day.events : [];
+  const events = useMemo(() => (day ? day.events : []), [day]);
 
   const addEvent = useTripStore((s) => s.addEvent);
   const insertEventBetween = useTripStore((s) => s.insertEventBetween);

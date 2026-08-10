@@ -34,10 +34,10 @@ export function useNearbySuggestions(anchor: SuggestionAnchor | null): NearbySta
   useEffect(() => {
     if (!anchor) return;
     let cancelled = false;
-    setLoading(true);
-    setError(null);
 
     void (async () => {
+      setLoading(true);
+      setError(null);
       try {
         const nearby: NearbyResult[] = await fetchNearby(anchor.lat, anchor.lon);
         if (cancelled) return;

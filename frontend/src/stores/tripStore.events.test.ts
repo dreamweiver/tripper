@@ -6,7 +6,7 @@ beforeEach(() => {
 
 test("seedMealsForTrip seeds three meals per day only once", () => {
   useTripStore.getState().seedMealsForTrip("t1", 2);
-  let events = useTripStore.getState().events;
+  const events = useTripStore.getState().events;
   expect(events).toHaveLength(6); // 3 meals x 2 days
   expect(events.filter((e) => e.dayIndex === 0)).toHaveLength(3);
 
