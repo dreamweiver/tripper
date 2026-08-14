@@ -36,6 +36,8 @@ export type TripInput = z.infer<typeof tripInputSchema>;
 export interface Trip extends TripInput {
   id: string;
   createdAt: string;
+  /** Resolved destination thumbnail URL, cached after first lookup. Absent until resolved. */
+  imageUrl?: string;
 }
 
 /** Wanderlog-style title: explicit name, else "Trip to {destination}". */

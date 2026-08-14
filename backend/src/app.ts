@@ -1,4 +1,6 @@
 import express, { type Express } from "express";
+import { searchRouter } from "./routes/search.js";
+import { nearbyRouter } from "./routes/nearby.js";
 
 // App factory (not a running server) so tests can mount it without a port.
 export function createApp(): Express {
@@ -6,5 +8,7 @@ export function createApp(): Express {
   app.get("/health", (_req, res) => {
     res.json({ status: "ok" });
   });
+  app.use("/api/search", searchRouter());
+  app.use("/api/nearby", nearbyRouter());
   return app;
 }

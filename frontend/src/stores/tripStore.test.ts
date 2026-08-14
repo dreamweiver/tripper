@@ -39,6 +39,20 @@ describe("tripStore", () => {
     expect(useTripStore.getState().getTrip(trip.id)?.id).toBe(trip.id);
   });
 
+  it("setTripImage caches the resolved url on the trip", () => {
+    const trip = useTripStore.getState().addTrip(input);
+    useTripStore.getState().setTripImage(trip.id, "https://img/paris.jpg");
+    expect(useTripStore.getState().getTrip(trip.id)?.imageUrl).toBe("https://img/paris.jpg");
+  });
+
+  it("setTripImage only touches the matching trip", () => {
+    const a = useTripStore.getState().addTrip({ ...input, destination: "A" });
+    const b = useTripStore.getState().addTrip({ ...input, destination: "B" });
+    useTripStore.getState().setTripImage(a.id, "https://img/a.jpg");
+    expect(useTripStore.getState().getTrip(a.id)?.imageUrl).toBe("https://img/a.jpg");
+    expect(useTripStore.getState().getTrip(b.id)?.imageUrl).toBeUndefined();
+  });
+
   it("persists under the tripper.trips key", () => {
     useTripStore.getState().addTrip(input);
     expect(localStorage.getItem("tripper.trips")).toContain("Paris");

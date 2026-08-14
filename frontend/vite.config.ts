@@ -12,6 +12,9 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "autoUpdate",
+      // Keep the service worker out of dev — a cached SW intercepts navigation
+      // and /api calls, serving stale builds during local development.
+      devOptions: { enabled: false },
       manifest: {
         name: "Tripper",
         short_name: "Tripper",
@@ -30,6 +33,9 @@ export default defineConfig({
   },
   server: {
     port: 5173,
+    proxy: {
+      "/api": "http://localhost:3001",
+    },
     fs: { allow: [sharedSrc, fileURLToPath(new URL(".", import.meta.url))] },
   },
 });
