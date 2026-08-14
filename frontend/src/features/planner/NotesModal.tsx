@@ -26,8 +26,12 @@ export function NotesModal({ title, notes, open, onSave, onClose }: NotesModalPr
         ))}
       </ul>
       <textarea aria-label="Edit notes" value={draft} onChange={(e) => setDraft(e.target.value)} />
-      <button type="button" onClick={handleSave}>Save</button>
-      <button type="button" onClick={onClose}>Close</button>
+      <button type="button" onClick={handleSave}>
+        Save
+      </button>
+      <button type="button" onClick={onClose}>
+        Close
+      </button>
     </div>
   );
 }

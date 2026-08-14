@@ -3,12 +3,22 @@ import userEvent from "@testing-library/user-event";
 import { NotesModal } from "./NotesModal";
 
 test("does not render when closed", () => {
-  render(<NotesModal title="Eiffel" notes={["a"]} open={false} onSave={() => {}} onClose={() => {}} />);
+  render(
+    <NotesModal title="Eiffel" notes={["a"]} open={false} onSave={() => {}} onClose={() => {}} />,
+  );
   expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
 });
 
 test("shows all notes when open", () => {
-  render(<NotesModal title="Eiffel" notes={["a", "b", "c", "d"]} open onSave={() => {}} onClose={() => {}} />);
+  render(
+    <NotesModal
+      title="Eiffel"
+      notes={["a", "b", "c", "d"]}
+      open
+      onSave={() => {}}
+      onClose={() => {}}
+    />,
+  );
   expect(screen.getAllByRole("listitem")).toHaveLength(4);
 });
 

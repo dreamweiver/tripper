@@ -6,9 +6,16 @@ import { useTripStore } from "../../stores/tripStore";
 import * as imageResolver from "../trips/resolveDestinationImage";
 
 const base: DecoratedEvent = {
-  id: "e1", tripId: "t1", dayIndex: 0, order: 0, kind: "place",
-  title: "Eiffel Tower", time: "09:00", openHours: "09:30–23:00",
-  notes: ["a", "b", "c", "d"], outOfOrder: false,
+  id: "e1",
+  tripId: "t1",
+  dayIndex: 0,
+  order: 0,
+  kind: "place",
+  title: "Eiffel Tower",
+  time: "09:00",
+  openHours: "09:30–23:00",
+  notes: ["a", "b", "c", "d"],
+  outOfOrder: false,
 };
 
 test("renders title and timing line", () => {
@@ -19,9 +26,13 @@ test("renders title and timing line", () => {
 });
 
 test("shows the out-of-order hint only when flagged", () => {
-  const { rerender } = render(<EventCard event={base} onEditNotes={() => {}} onRemove={() => {}} />);
+  const { rerender } = render(
+    <EventCard event={base} onEditNotes={() => {}} onRemove={() => {}} />,
+  );
   expect(screen.queryByText(/earlier than the stop above/i)).not.toBeInTheDocument();
-  rerender(<EventCard event={{ ...base, outOfOrder: true }} onEditNotes={() => {}} onRemove={() => {}} />);
+  rerender(
+    <EventCard event={{ ...base, outOfOrder: true }} onEditNotes={() => {}} onRemove={() => {}} />,
+  );
   expect(screen.getByText(/earlier than the stop above/i)).toBeInTheDocument();
 });
 
@@ -35,11 +46,19 @@ test("expanding notes calls onEditNotes", async () => {
 test("persists a resolved image to the event so it is not re-fetched", async () => {
   useTripStore.setState({
     trips: [],
-    events: [{ id: "e1", tripId: "t1", dayIndex: 0, order: 0, kind: "place", title: "Eiffel Tower", notes: [] }],
+    events: [
+      {
+        id: "e1",
+        tripId: "t1",
+        dayIndex: 0,
+        order: 0,
+        kind: "place",
+        title: "Eiffel Tower",
+        notes: [],
+      },
+    ],
   });
-  jest
-    .spyOn(imageResolver, "resolveDestinationImage")
-    .mockResolvedValue("https://img/eiffel.jpg");
+  jest.spyOn(imageResolver, "resolveDestinationImage").mockResolvedValue("https://img/eiffel.jpg");
 
   render(<EventCard event={base} onEditNotes={() => {}} onRemove={() => {}} />);
 

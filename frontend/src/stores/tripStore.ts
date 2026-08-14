@@ -25,6 +25,7 @@ interface TripState {
   updateEvent: (id: string, patch: Partial<TimelineEvent>) => void;
   updateNotes: (id: string, notes: string[]) => void;
   setEventImage: (id: string, imageUrl: string) => void;
+  setEventDescription: (id: string, description: string) => void;
   removeEvent: (id: string) => void;
 }
 
@@ -94,6 +95,8 @@ export const useTripStore = create<TripState>()(
         set((s) => ({ events: s.events.map((e) => (e.id === id ? { ...e, notes } : e)) })),
       setEventImage: (id, imageUrl) =>
         set((s) => ({ events: s.events.map((e) => (e.id === id ? { ...e, imageUrl } : e)) })),
+      setEventDescription: (id, description) =>
+        set((s) => ({ events: s.events.map((e) => (e.id === id ? { ...e, description } : e)) })),
       removeEvent: (id) => set((s) => ({ events: s.events.filter((e) => e.id !== id) })),
     }),
     { name: "tripper.trips", version: 2 },

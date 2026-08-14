@@ -10,7 +10,9 @@ export interface TimelineEvent {
   time?: string;
   lat?: number;
   lon?: number;
+  address?: string;
   category?: string;
+  description?: string;
   openHours?: string;
   imageUrl?: string;
   notes: string[];

@@ -5,7 +5,9 @@ import { useTripStore } from "../../stores/tripStore";
 
 beforeEach(() => {
   useTripStore.setState({ trips: [], events: [] });
-  global.fetch = jest.fn().mockResolvedValue({ ok: true, json: async () => [] }) as unknown as typeof fetch;
+  global.fetch = jest
+    .fn()
+    .mockResolvedValue({ ok: true, json: async () => [] }) as unknown as typeof fetch;
 });
 afterEach(() => jest.restoreAllMocks());
 
@@ -21,7 +23,10 @@ function renderAt(id: string) {
 
 test("seeds meals for the trip and renders day headers", async () => {
   const trip = useTripStore.getState().addTrip({
-    destination: "Paris", name: "", startDate: "2999-08-12", endDate: "2999-08-13",
+    destination: "Paris",
+    name: "",
+    startDate: "2999-08-12",
+    endDate: "2999-08-13",
   });
   renderAt(trip.id);
   expect(await screen.findByText(/DAY 1/)).toBeInTheDocument();

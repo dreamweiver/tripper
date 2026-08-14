@@ -11,18 +11,19 @@ export function nearbyRouter(): Router {
   router.get("/", async (req, res) => {
     const lat = Number(req.query.lat);
     const lon = Number(req.query.lon);
+    const eateries = req.query.eateries === "1";
     if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
       res.status(400).json({ error: "lat and lon must be numbers" });
       return;
     }
-    const key = `${lat.toFixed(3)},${lon.toFixed(3)}`;
+    const key = `${eateries ? "e:" : ""}${lat.toFixed(3)},${lon.toFixed(3)}`;
     const cached = cache.get(key);
     if (cached) {
       res.json(cached);
       return;
     }
     try {
-      const results = await nearbyPlaces(lat, lon);
+      const results = await nearbyPlaces(lat, lon, { eateries });
       cache.set(key, results, CACHE_TTL_MS);
       res.json(results);
     } catch {

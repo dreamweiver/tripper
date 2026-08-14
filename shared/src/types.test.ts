@@ -7,8 +7,24 @@ test("isMealKind distinguishes meal from place", () => {
 });
 
 test("PlaceResult and NearbyResult shapes are usable", () => {
-  const p: PlaceResult = { title: "Louvre", lat: 48.8, lon: 2.3, category: "tourism", type: "museum" };
-  const n: NearbyResult = { title: "Tuileries", lat: 48.86, lon: 2.32, category: "leisure", distance: 300 };
-  expect(p.title).toBe("Louvre");
+  const p: PlaceResult = {
+    title: "Louvre Museum, Paris",
+    name: "Louvre Museum",
+    address: "Paris",
+    lat: 48.8,
+    lon: 2.3,
+    category: "tourism",
+    type: "museum",
+  };
+  const n: NearbyResult = {
+    title: "Tuileries",
+    name: "Tuileries",
+    lat: 48.86,
+    lon: 2.32,
+    category: "leisure",
+    distance: 300,
+  };
+  expect(p.name).toBe("Louvre Museum");
+  expect(p.address).toBe("Paris");
   expect(n.distance).toBe(300);
 });

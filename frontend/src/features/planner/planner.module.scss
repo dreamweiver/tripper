@@ -1,36 +1,743 @@
-.layout { display: flex; flex-direction: column; height: 100%; }
-.timeline { flex: 1.6; overflow: auto; padding: 10px; }
-.map { flex: 1; background: #eef3f7; display: flex; align-items: center; justify-content: center; color: #8aa; }
-.tabs { display: flex; font-size: 12px; border-bottom: 1px solid #ccc; }
-.tab { flex: 1; text-align: center; padding: 6px; cursor: pointer; }
-.tabActive { border-bottom: 2px solid #0d9488; font-weight: 600; }
+.layout {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.panels {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+.timeline {
+  flex: 1.2;
+  overflow: auto;
+  padding: 10px;
+}
+.map {
+  flex: 1;
+  background: #eef3f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8aa;
+}
+.tabs {
+  display: flex;
+  font-size: 12px;
+  border-bottom: 1px solid #ccc;
+}
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 6px;
+  cursor: pointer;
+}
+.tabActive {
+  border-bottom: 2px solid #0d9488;
+  font-weight: 600;
+}
 
-.dayHeader { font-size: 12px; letter-spacing: .05em; opacity: .6; margin: 12px 0 6px; }
+// Narrow screens: one panel at a time, chosen by the active tab.
+.layout[data-active="timeline"] .map {
+  display: none;
+}
+.layout[data-active="map"] .timeline {
+  display: none;
+}
 
-.card { border: 1px solid #ddd; border-radius: 8px; padding: 8px; display: flex; gap: 8px; }
-.cardImage { width: 48px; height: 48px; object-fit: cover; border-radius: 6px; flex: none; }
-.cardBody { flex: 1; min-width: 0; }
-.cardTitleRow { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-.cardTiming { font-size: 11px; opacity: .7; }
-.outOfOrder { margin-top: 4px; font-size: 10px; color: #b45309; background: #fef3c7; border-radius: 4px; padding: 2px 6px; display: inline-block; }
+// Wide screens: hide the tabs and always show timeline + map side by side.
+@media (min-width: 900px) {
+  .tabs {
+    display: none;
+  }
+  .layout[data-active="timeline"] .map,
+  .layout[data-active="map"] .timeline {
+    display: revert;
+  }
+  .map {
+    display: flex;
+  }
+}
 
-.mealAnchor { width: 100%; text-align: left; border: 1px dashed #f0a500; border-radius: 8px; padding: 8px; font-size: 12px; color: #b07800; background: none; cursor: pointer; }
+.dayHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  font-size: 15px;
+  letter-spacing: 0.05em;
+  margin: 16px 0 10px;
+  text-transform: uppercase;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  color: #334155;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  transition:
+    box-shadow 0.14s,
+    transform 0.14s,
+    border-color 0.14s;
+}
+// Collapsed headers read as raised, tappable cards; expanded ones flatten since
+// their day content follows directly beneath.
+.dayHeader[data-open="false"] {
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+.dayHeader[data-open="true"] {
+  box-shadow: none;
+  border-color: transparent;
+  background: none;
+  padding: 6px 0;
+}
+.dayHeader:hover {
+  border-color: #cbd5e1;
+}
+.dayHeader[data-open="false"]:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
+}
+.dayHeaderChevron {
+  flex: none;
+  transition: transform 0.15s;
+  display: inline-block;
+}
+.dayHeaderChevron[data-open="false"] {
+  transform: rotate(-90deg);
+}
+.dayHeaderText {
+  flex: 1;
+}
 
-.connector { display: flex; flex-direction: column; align-items: center; position: relative; height: 30px; }
-.connectorLine { width: 0; border-left: 2px dashed #bbb; height: 100%; }
-.connectorInsert { position: absolute; top: 5px; background: #0d9488; color: #fff; width: 20px; height: 20px; border-radius: 50%; border: none; cursor: pointer; opacity: 0; transition: opacity .12s; }
-.connector:hover .connectorInsert, .connectorInsert:focus { opacity: 1; }
+// Timeline spine: a fixed-width rail column with a numbered pin, next to the
+// stop content. A continuous vertical line is drawn behind the pins.
+.timelineRow {
+  display: flex;
+  gap: 12px;
+}
+.timelineRail {
+  position: relative;
+  flex: none;
+  width: 28px;
+  display: flex;
+  justify-content: center;
+}
+.timelineRail::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  background: #e2e8f0;
+}
+.timelineRow:first-child .timelineRail::before {
+  top: 14px;
+}
+.timelineRow:last-child .timelineRail::before {
+  bottom: calc(100% - 28px);
+}
+.timelineContent {
+  flex: 1;
+  min-width: 0;
+  padding-bottom: 4px;
+}
 
-.suggestions { margin: 10px 0; }
-.suggestionsHeading { font-size: 13px; font-weight: 600; margin-bottom: 8px; }
-.suggestionsRow { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; }
-.suggestionsError { font-size: 12px; color: #b45309; }
-.suggestionCard { flex: 0 0 140px; border: 1px solid #ddd; border-radius: 10px; overflow: hidden; padding: 8px; }
-.suggestionImage { width: 100%; height: 80px; object-fit: cover; }
-.suggestionTitle { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.suggestionMeta { font-size: 10px; opacity: .65; margin: 2px 0 6px; }
-.skeleton { flex: 0 0 140px; height: 130px; border-radius: 10px; background: #eee; }
+.markerPin {
+  position: relative;
+  z-index: 1;
+  width: 26px;
+  height: 26px;
+  margin-top: 4px;
+  border-radius: 50%;
+  background: #0d9488;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 3px #fff;
+}
+.markerDot {
+  position: relative;
+  z-index: 1;
+  width: 12px;
+  height: 12px;
+  margin-top: 11px;
+  border-radius: 50%;
+  background: #cbd5e1;
+  box-shadow: 0 0 0 3px #fff;
+}
 
-.search { border: 1px solid #ccc; border-radius: 10px; padding: 12px; }
-.addPlace { text-align: center; margin-top: 12px; }
-.link { text-decoration: none; color: inherit; }
+.card {
+  position: relative;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition:
+    box-shadow 0.12s,
+    border-color 0.12s;
+}
+.card:hover {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.09);
+  border-color: #d7dde5;
+}
+.cardImage {
+  width: 104px;
+  height: 104px;
+  object-fit: cover;
+  border-radius: 10px;
+  flex: none;
+  order: 2;
+  margin-top: 22px;
+  background: #f1f5f9;
+}
+.cardBody {
+  flex: 1;
+  min-width: 0;
+  order: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.cardTitleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  padding-right: 20px;
+}
+.cardTitle {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+.cardRemove {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 2;
+  flex: none;
+  border: none;
+  background: rgba(255, 255, 255, 0.85);
+  font-size: 20px;
+  line-height: 1;
+  color: #94a3b8;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+.cardRemove:hover {
+  color: #334155;
+  background: #f1f5f9;
+}
+.cardAddress {
+  font-size: 15px;
+  color: #8a8a8a;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cardDescription {
+  font-size: 15px;
+  line-height: 1.4;
+  color: #475569;
+  margin: 2px 0 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.addNote {
+  align-self: flex-start;
+  margin-top: 4px;
+  font-size: 14px;
+  color: #0d9488;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-weight: 600;
+}
+.addNote:hover {
+  text-decoration: underline;
+}
+.cardMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+  color: #64748b;
+  margin-top: 2px;
+}
+.categoryChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #475569;
+  font-weight: 600;
+  font-size: 14px;
+}
+.cardTime {
+  font-weight: 600;
+  color: #0d9488;
+}
+.cardOpen {
+  opacity: 0.8;
+}
+.outOfOrder {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #b45309;
+  background: #fef3c7;
+  border-radius: 4px;
+  padding: 2px 6px;
+  display: inline-block;
+}
+
+.mealAnchor {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 16px;
+  background: #fff7ed;
+  color: #9a3412;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.mealAnchor:hover {
+  background: #ffedd5;
+}
+.mealAnchorLabel {
+  font-weight: 600;
+}
+.mealAnchorAction {
+  font-size: 14px;
+  color: #c2410c;
+  opacity: 0.85;
+}
+
+.connector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  min-height: 34px;
+  padding: 4px 0;
+}
+.connectorLine {
+  flex: none;
+  width: 0;
+  border-left: 2px dashed #cbd5e1;
+  align-self: stretch;
+  margin-left: 12px;
+}
+.connectorLeg {
+  font-size: 13px;
+  color: #64748b;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #f8fafc;
+  border: 1px solid #eef2f6;
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+.connectorInsert {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  background: #0d9488;
+  color: #fff;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.12s;
+}
+.connector:hover .connectorInsert,
+.connectorInsert:focus {
+  opacity: 1;
+}
+
+.suggestions {
+  margin: 10px 0;
+}
+.suggestionsHeading {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.suggestionsRow {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+.suggestionsError {
+  font-size: 14px;
+  color: #b45309;
+}
+.suggestionCard {
+  flex: 0 0 170px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 8px;
+}
+.suggestionImage {
+  width: 100%;
+  height: 96px;
+  object-fit: cover;
+}
+.suggestionTitle {
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.suggestionMeta {
+  font-size: 13px;
+  opacity: 0.65;
+  margin: 2px 0 6px;
+}
+// Inline "Show more" tile at the tail of the horizontally-scrolling row.
+.suggestionMore {
+  flex: 0 0 auto;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0d9488;
+  background: #f0fdfa;
+  border: 1px dashed #99f6e4;
+  border-radius: 10px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.suggestionMore:hover {
+  background: #ccfbf1;
+}
+.skeleton {
+  flex: 0 0 170px;
+  height: 150px;
+  border-radius: 10px;
+  background: #eee;
+}
+
+.searchOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+  overscroll-behavior: contain;
+}
+.searchDialog {
+  background: #fff;
+  border-radius: 14px;
+  padding: 18px;
+  width: 100%;
+  max-width: 440px;
+  max-height: 82vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.28);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.searchHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.searchTitle {
+  font-size: 19px;
+  font-weight: 700;
+  margin: 0;
+}
+.searchClose {
+  border: none;
+  background: none;
+  font-size: 22px;
+  line-height: 1;
+  color: #888;
+  cursor: pointer;
+  padding: 0 4px;
+  border-radius: 6px;
+}
+.searchClose:hover {
+  color: #333;
+  background: #f0f0f0;
+}
+
+.searchForm {
+  display: flex;
+  gap: 8px;
+}
+.searchInput {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px;
+  font-size: 16px;
+  border: 1px solid #d5d5d5;
+  border-radius: 10px;
+  outline: none;
+}
+.searchInput:focus {
+  border-color: #0d9488;
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+}
+.searchSubmit {
+  flex: none;
+  padding: 10px 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  background: #0d9488;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.searchSubmit:hover {
+  background: #0b8177;
+}
+
+.searchStatus {
+  font-size: 15px;
+  color: #888;
+  margin: 4px 2px;
+}
+
+.resultList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.resultRow {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 8px;
+  border: none;
+  border-radius: 8px;
+  background: none;
+  cursor: pointer;
+}
+.resultRow:hover {
+  background: #f4f7f7;
+}
+.resultName {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+.resultAddress {
+  font-size: 14px;
+  font-weight: 400;
+  color: #8a8a8a;
+}
+.addPlace {
+  text-align: center;
+  margin-top: 12px;
+}
+// Slim inline add row used at the head (before first event) and tail of a day.
+.addRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 2px 0;
+}
+.addRowButton {
+  flex: 1;
+  text-align: left;
+  font-size: 15px;
+  font-weight: 600;
+  color: #0d9488;
+  background: none;
+  border: 1px dashed #cbd5e1;
+  border-radius: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition:
+    background 0.12s,
+    border-color 0.12s;
+}
+.addRowButton:hover {
+  background: #f0fdfa;
+  border-color: #0d9488;
+}
+.link {
+  text-decoration: none;
+  color: inherit;
+}
+
+// Trip summary header: destination image, title, dates, and an interactive
+// segmented progress bar (one segment per day; click jumps to that day).
+.summary {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  gap: 14px;
+  align-items: stretch;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 14px;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+.summaryImage {
+  width: 120px;
+  height: 120px;
+  flex: none;
+  object-fit: cover;
+  border-radius: 12px;
+  background: #f1f5f9;
+}
+.summaryBody {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.summaryTitle {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.2;
+}
+.summaryMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  color: #475569;
+}
+.summaryDest {
+  font-weight: 600;
+  color: #334155;
+}
+.summaryProgress {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.summaryProgressLabel {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 14px;
+  color: #64748b;
+}
+.summaryProgressCount {
+  font-weight: 700;
+  color: #0d9488;
+}
+.progressBar {
+  display: flex;
+  gap: 4px;
+}
+.progressSegment {
+  flex: 1;
+  height: 12px;
+  border: none;
+  border-radius: 999px;
+  background: #e2e8f0;
+  cursor: pointer;
+  padding: 0;
+  transition:
+    background 0.15s,
+    transform 0.1s;
+}
+.progressSegment[data-planned="true"] {
+  background: #0d9488;
+}
+.progressSegment:hover {
+  transform: scaleY(1.35);
+}
+.progressSegment:focus-visible {
+  outline: 2px solid #0d9488;
+  outline-offset: 2px;
+}
+
+@media (max-width: 480px) {
+  .summary {
+    flex-direction: column;
+  }
+  .summaryImage {
+    width: 100%;
+    height: 140px;
+  }
+}
+
+// Loading spinner shown while background work runs (opening the eatery modal,
+// searching). Rendered inside the search dialog body.
+.spinnerWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 28px 0;
+  color: #64748b;
+  font-size: 15px;
+}
+.spinner {
+  width: 34px;
+  height: 34px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #0d9488;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

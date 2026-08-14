@@ -28,6 +28,15 @@
   box-sizing: border-box;
 }
 
+/* Full-height chain so screens using height:100% (e.g. the planner) get a
+   viewport-bounded scroll container instead of the whole page scrolling —
+   required for the planner's sticky summary to engage. */
+html,
+body,
+#root {
+  height: 100%;
+}
+
 body {
   margin: 0;
   background: hsl(var(--background));

@@ -14,14 +14,17 @@ export function searchRouter(): Router {
       res.status(400).json({ error: "Missing query parameter q" });
       return;
     }
-    const key = q.toLowerCase();
+    const lat = Number(req.query.lat);
+    const lon = Number(req.query.lon);
+    const biased = Number.isFinite(lat) && Number.isFinite(lon);
+    const key = biased ? `${q.toLowerCase()}@${lat.toFixed(2)},${lon.toFixed(2)}` : q.toLowerCase();
     const cached = cache.get(key);
     if (cached) {
       res.json(cached);
       return;
     }
     try {
-      const results = await searchPlaces(q);
+      const results = await searchPlaces(q, biased ? { lat, lon } : {});
       cache.set(key, results, CACHE_TTL_MS);
       res.json(results);
     } catch {

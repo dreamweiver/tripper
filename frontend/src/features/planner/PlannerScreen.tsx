@@ -1,9 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { tripDayCount } from "@tripper/shared";
 import { useTripStore } from "../../stores/tripStore";
 import { usePlannerEvents } from "./hooks/usePlannerEvents";
 import { PlannerLayout } from "./PlannerLayout";
+import { TripSummary } from "./TripSummary";
 import { DaySection } from "./DaySection";
 
 const WEEKDAYS = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
@@ -22,12 +23,20 @@ export function PlannerScreen() {
 
   const dayCount = trip ? tripDayCount(trip.startDate, trip.endDate) : 0;
 
+  // Accordion: exactly one day expanded at a time to keep the timeline focused.
+  const [openDayIndex, setOpenDayIndex] = useState(0);
+
   useEffect(() => {
     if (trip) seedMealsForTrip(trip.id, dayCount);
   }, [trip, dayCount, seedMealsForTrip]);
 
   // Subscribe so the screen re-renders as events change (grouping used by children).
-  usePlannerEvents(trip?.id ?? "", dayCount);
+  const days = usePlannerEvents(trip?.id ?? "", dayCount);
+  // A day counts as "planned" once it has at least one real place (meals excluded).
+  const plannedDays = useMemo(
+    () => days.map((d) => d.events.some((e) => e.kind === "place")),
+    [days],
+  );
 
   if (!trip) {
     return (
@@ -40,6 +49,12 @@ export function PlannerScreen() {
 
   const timeline = (
     <div>
+      <TripSummary
+        trip={trip}
+        dayCount={dayCount}
+        plannedDays={plannedDays}
+        onSelectDay={setOpenDayIndex}
+      />
       {Array.from({ length: dayCount }, (_, dayIndex) => (
         <DaySection
           key={dayIndex}
@@ -47,6 +62,8 @@ export function PlannerScreen() {
           dayIndex={dayIndex}
           date={dayLabel(trip.startDate, dayIndex)}
           destination={trip.destination}
+          expanded={openDayIndex === dayIndex}
+          onToggle={() => setOpenDayIndex((cur) => (cur === dayIndex ? -1 : dayIndex))}
         />
       ))}
     </div>

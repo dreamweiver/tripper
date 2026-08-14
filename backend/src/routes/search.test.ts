@@ -3,17 +3,34 @@ import request from "supertest";
 import { createApp } from "../app.js";
 
 const sample = [
-  { display_name: "Louvre Museum, Paris", lat: "48.8606", lon: "2.3376", category: "tourism", type: "museum" },
+  {
+    display_name: "Louvre Museum, Rue de Rivoli, Paris",
+    name: "Louvre Museum",
+    lat: "48.8606",
+    lon: "2.3376",
+    category: "tourism",
+    type: "museum",
+  },
 ];
 
 afterEach(() => jest.restoreAllMocks());
 
 test("GET /api/search returns trimmed results", async () => {
-  global.fetch = jest.fn().mockResolvedValue({ ok: true, json: async () => sample }) as unknown as typeof fetch;
+  global.fetch = jest
+    .fn()
+    .mockResolvedValue({ ok: true, json: async () => sample }) as unknown as typeof fetch;
   const res = await request(createApp()).get("/api/search").query({ q: "louvre" });
   expect(res.status).toBe(200);
   expect(res.body).toEqual([
-    { title: "Louvre Museum, Paris", lat: 48.8606, lon: 2.3376, category: "tourism", type: "museum" },
+    {
+      title: "Louvre Museum, Rue de Rivoli, Paris",
+      name: "Louvre Museum",
+      address: "Rue de Rivoli, Paris",
+      lat: 48.8606,
+      lon: 2.3376,
+      category: "tourism",
+      type: "museum",
+    },
   ]);
 });
 

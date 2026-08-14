@@ -1,19 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 import type { NearbyResult } from "@tripper/shared";
 import { fetchNearby, fetchSearch } from "../api";
+import type { SuggestionItem } from "../SuggestionCard";
 
 export interface SuggestionAnchor {
   lat: number;
   lon: number;
   destination: string;
-}
-
-interface SuggestionItem {
-  title: string;
-  category: string;
-  distance?: number;
-  lat: number;
-  lon: number;
 }
 
 interface NearbyState {
@@ -42,11 +35,28 @@ export function useNearbySuggestions(anchor: SuggestionAnchor | null): NearbySta
         const nearby: NearbyResult[] = await fetchNearby(anchor.lat, anchor.lon);
         if (cancelled) return;
         if (nearby.length > 0) {
-          setItems(nearby.map((n) => ({ title: n.title, category: n.category, distance: n.distance, lat: n.lat, lon: n.lon })));
+          setItems(
+            nearby.map((n) => ({
+              title: n.title,
+              category: n.category,
+              distance: n.distance,
+              ...(n.address ? { address: n.address } : {}),
+              lat: n.lat,
+              lon: n.lon,
+            })),
+          );
         } else {
           const popular = await fetchSearch(anchor.destination);
           if (cancelled) return;
-          setItems(popular.map((p) => ({ title: p.title, category: p.category, lat: p.lat, lon: p.lon })));
+          setItems(
+            popular.map((p) => ({
+              title: p.title,
+              category: p.category,
+              ...(p.address ? { address: p.address } : {}),
+              lat: p.lat,
+              lon: p.lon,
+            })),
+          );
         }
       } catch {
         if (!cancelled) setError("Couldn't load suggestions");

@@ -3,10 +3,13 @@ import { fetchSearch, fetchNearby } from "./api";
 afterEach(() => jest.restoreAllMocks());
 
 test("fetchSearch calls /api/search with the encoded query and returns json", async () => {
-  const fetchMock = jest.fn().mockResolvedValue({ ok: true, json: async () => [{ title: "Louvre" }] });
+  const fetchMock = jest
+    .fn()
+    .mockResolvedValue({ ok: true, json: async () => [{ title: "Louvre" }] });
   global.fetch = fetchMock as unknown as typeof fetch;
   const results = await fetchSearch("new york");
-  expect(fetchMock.mock.calls[0][0]).toContain("/api/search?q=new%20york");
+  // URLSearchParams encodes spaces as "+".
+  expect(fetchMock.mock.calls[0][0]).toContain("/api/search?q=new+york");
   expect(results).toEqual([{ title: "Louvre" }]);
 });
 

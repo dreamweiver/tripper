@@ -5,6 +5,7 @@ export interface SuggestionItem {
   title: string;
   category: string;
   distance?: number;
+  address?: string;
   lat: number;
   lon: number;
 }
@@ -20,10 +21,12 @@ export function SuggestionCard({ item, onAdd }: SuggestionCardProps) {
     .join(" · ");
   return (
     <div className={styles.suggestionCard}>
-      <PlaceImage title={item.title} className={styles.suggestionImage} />
+      <PlaceImage title={item.title} category={item.category} className={styles.suggestionImage} />
       <div className={styles.suggestionTitle}>{item.title}</div>
       <div className={styles.suggestionMeta}>{meta}</div>
-      <button type="button" onClick={() => onAdd(item)}>+ Add</button>
+      <button type="button" onClick={() => onAdd(item)}>
+        + Add
+      </button>
     </div>
   );
 }
