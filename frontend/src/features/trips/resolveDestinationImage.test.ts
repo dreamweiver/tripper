@@ -8,7 +8,19 @@ describe("resolveDestinationImage", () => {
     jest.restoreAllMocks();
   });
 
-  it("returns the thumbnail source on a hit", async () => {
+  it("prefers the full-resolution originalimage over the thumbnail", async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        thumbnail: { source: "https://img/320px-paris.jpg" },
+        originalimage: { source: "https://img/original-paris.jpg" },
+      }),
+    }) as unknown as typeof fetch;
+
+    await expect(resolveDestinationImage("Paris")).resolves.toBe("https://img/original-paris.jpg");
+  });
+
+  it("falls back to the thumbnail when there is no originalimage", async () => {
     global.fetch = jest.fn().mockResolvedValue({
       ok: true,
       json: async () => ({ thumbnail: { source: "https://img/paris.jpg" } }),

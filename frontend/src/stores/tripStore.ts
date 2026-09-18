@@ -29,6 +29,25 @@ interface TripState {
   removeEvent: (id: string) => void;
 }
 
+export const TRIP_STORE_VERSION = 3;
+
+/**
+ * Persist migration. v3 drops cached low-res image URLs (small ~330px Wikipedia
+ * summary thumbnails) from trips and events, so they re-resolve to the
+ * full-resolution `originalimage` on next load. Exported for direct testing.
+ */
+export function migrateTripState(persisted: unknown, version: number): TripState {
+  const state = persisted as Partial<TripState> | undefined;
+  if (state && version < 3) {
+    return {
+      ...state,
+      trips: (state.trips ?? []).map((t) => ({ ...t, imageUrl: undefined })),
+      events: (state.events ?? []).map((e) => ({ ...e, imageUrl: undefined })),
+    } as TripState;
+  }
+  return persisted as TripState;
+}
+
 export const useTripStore = create<TripState>()(
   persist(
     (set, get) => ({
@@ -99,6 +118,10 @@ export const useTripStore = create<TripState>()(
         set((s) => ({ events: s.events.map((e) => (e.id === id ? { ...e, description } : e)) })),
       removeEvent: (id) => set((s) => ({ events: s.events.filter((e) => e.id !== id) })),
     }),
-    { name: "tripper.trips", version: 2 },
+    {
+      name: "tripper.trips",
+      version: TRIP_STORE_VERSION,
+      migrate: migrateTripState,
+    },
   ),
 );

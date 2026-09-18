@@ -44,7 +44,7 @@ test("adding a place via search appends it to the day", async () => {
       onToggle={() => {}}
     />,
   );
-  await userEvent.click(screen.getByRole("button", { name: /add place/i }));
+  await userEvent.click(screen.getByRole("button", { name: /add a stop after/i }));
   await userEvent.type(screen.getByRole("searchbox"), "louvre");
   await userEvent.click(screen.getByRole("button", { name: /^search$/i }));
   await userEvent.click(await screen.findByText("Louvre"));

@@ -6,15 +6,8 @@ import { usePlannerEvents } from "./hooks/usePlannerEvents";
 import { PlannerLayout } from "./PlannerLayout";
 import { TripSummary } from "./TripSummary";
 import { DaySection } from "./DaySection";
-
-const WEEKDAYS = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-const MONTHS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-
-function dayLabel(startDate: string, offset: number): string {
-  const [y, m, d] = startDate.split("-").map(Number);
-  const date = new Date(Date.UTC(y ?? 1970, (m ?? 1) - 1, (d ?? 1) + offset));
-  return `${WEEKDAYS[date.getUTCDay()]} ${MONTHS[date.getUTCMonth()]} ${date.getUTCDate()}`;
-}
+import { formatDayLabel } from "./formatDayLabel";
+import styles from "./planner.module.scss";
 
 export function PlannerScreen() {
   const { id } = useParams();
@@ -56,15 +49,17 @@ export function PlannerScreen() {
         onSelectDay={setOpenDayIndex}
       />
       {Array.from({ length: dayCount }, (_, dayIndex) => (
-        <DaySection
-          key={dayIndex}
-          tripId={trip.id}
-          dayIndex={dayIndex}
-          date={dayLabel(trip.startDate, dayIndex)}
-          destination={trip.destination}
-          expanded={openDayIndex === dayIndex}
-          onToggle={() => setOpenDayIndex((cur) => (cur === dayIndex ? -1 : dayIndex))}
-        />
+        <div key={dayIndex}>
+          {dayIndex > 0 && <hr className={styles.dayDivider} />}
+          <DaySection
+            tripId={trip.id}
+            dayIndex={dayIndex}
+            date={formatDayLabel(trip.startDate, dayIndex)}
+            destination={trip.destination}
+            expanded={openDayIndex === dayIndex}
+            onToggle={() => setOpenDayIndex((cur) => (cur === dayIndex ? -1 : dayIndex))}
+          />
+        </div>
       ))}
     </div>
   );

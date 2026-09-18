@@ -11,7 +11,12 @@
 .timeline {
   flex: 1.2;
   overflow: auto;
-  padding: 10px;
+  padding: 20px 28px;
+}
+@media (min-width: 900px) {
+  .timeline {
+    padding: 28px 48px;
+  }
 }
 .map {
   flex: 1;
@@ -110,13 +115,24 @@
 }
 .dayHeaderText {
   flex: 1;
+  font-weight: 700;
+}
+.dayHeader[data-open="true"] .dayHeaderText {
+  font-size: 16px;
+}
+
+// Horizontal separator drawn between consecutive day sections.
+.dayDivider {
+  border: none;
+  border-top: 1px solid #e2e8f0;
+  margin: 20px 0 4px;
 }
 
 // Timeline spine: a fixed-width rail column with a numbered pin, next to the
 // stop content. A continuous vertical line is drawn behind the pins.
 .timelineRow {
   display: flex;
-  gap: 12px;
+  gap: 16px;
 }
 .timelineRail {
   position: relative;
@@ -144,7 +160,7 @@
 .timelineContent {
   flex: 1;
   min-width: 0;
-  padding-bottom: 4px;
+  padding-bottom: 8px;
 }
 
 .markerPin {
@@ -178,9 +194,9 @@
   position: relative;
   border: 1px solid #e5e7eb;
   border-radius: 14px;
-  padding: 12px 14px;
+  padding: 16px;
   display: flex;
-  gap: 12px;
+  gap: 16px;
   align-items: flex-start;
   background: #fff;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
@@ -343,19 +359,27 @@
 .connector {
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  gap: 10px;
   position: relative;
-  min-height: 34px;
-  padding: 4px 0;
+  min-height: 38px;
+  padding: 6px 0;
 }
+// Dashed link centered in the stop column, spanning the row's full height.
 .connectorLine {
-  flex: none;
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
   width: 0;
+  transform: translateX(-50%);
   border-left: 2px dashed #cbd5e1;
-  align-self: stretch;
-  margin-left: 12px;
 }
+// Travel chip sits centered on the line (its solid fill breaks the dashes like
+// a label) and fades out on hover so the insert "+" can take the same spot.
 .connectorLeg {
+  position: relative;
+  z-index: 1;
   font-size: 13px;
   color: #64748b;
   display: inline-flex;
@@ -365,22 +389,27 @@
   border: 1px solid #eef2f6;
   border-radius: 999px;
   padding: 2px 8px;
+  transition: opacity 0.12s;
+}
+.connector:hover .connectorLeg {
+  opacity: 0;
 }
 .connectorInsert {
   position: absolute;
   top: 50%;
-  right: 0;
-  transform: translateY(-50%);
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;
   line-height: 1;
   background: #0d9488;
   color: #fff;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
-  border: none;
+  border: 2px solid #fff;
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.12s;
@@ -579,27 +608,22 @@
   font-weight: 400;
   color: #8a8a8a;
 }
-.addPlace {
-  text-align: center;
-  margin-top: 12px;
-}
-// Slim inline add row used at the head (before first event) and tail of a day.
+// Slim inline add row used at the head (before first event) and tail (after the
+// last event) of a day. Centered so the two placeholders read as symmetric.
 .addRow {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 2px 0;
+  justify-content: center;
+  padding: 6px 0;
 }
 .addRowButton {
-  flex: 1;
-  text-align: left;
+  text-align: center;
   font-size: 15px;
   font-weight: 600;
   color: #0d9488;
   background: none;
   border: 1px dashed #cbd5e1;
   border-radius: 10px;
-  padding: 8px 12px;
+  padding: 8px 20px;
   cursor: pointer;
   transition:
     background 0.12s,
@@ -614,42 +638,58 @@
   color: inherit;
 }
 
-// Trip summary header: destination image, title, dates, and an interactive
-// segmented progress bar (one segment per day; click jumps to that day).
+// Trip summary header: the destination image fills the card as a background,
+// with a dark gradient scrim so the title, dates, and the interactive
+// segmented progress bar (one segment per day; click jumps to that day) stay
+// legible overlaid on top.
 .summary {
   position: sticky;
   top: 0;
   z-index: 20;
-  display: flex;
-  gap: 14px;
-  align-items: stretch;
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  display: block;
+  overflow: hidden;
   border-radius: 16px;
-  padding: 14px;
-  margin-bottom: 14px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  margin-bottom: 18px;
+  min-height: 200px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.14);
+  color: #fff;
+  isolation: isolate;
 }
-.summaryImage {
-  width: 120px;
-  height: 120px;
-  flex: none;
+.summaryBg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border-radius: 12px;
-  background: #f1f5f9;
+  background: #cbd5e1;
+}
+.summaryScrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    180deg,
+    rgba(15, 23, 42, 0.15) 0%,
+    rgba(15, 23, 42, 0.32) 42%,
+    rgba(15, 23, 42, 0.78) 100%
+  );
 }
 .summaryBody {
-  flex: 1;
-  min-width: 0;
+  position: relative;
+  z-index: 2;
+  min-height: 200px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
+  padding: 18px 20px;
 }
 .summaryTitle {
-  font-size: 22px;
-  font-weight: 700;
+  font-size: 24px;
+  font-weight: 800;
   margin: 0;
   line-height: 1.2;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
 }
 .summaryMeta {
   display: flex;
@@ -657,11 +697,12 @@
   align-items: center;
   gap: 8px;
   font-size: 15px;
-  color: #475569;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 .summaryDest {
   font-weight: 600;
-  color: #334155;
+  color: #fff;
 }
 .summaryProgress {
   margin-top: auto;
@@ -674,11 +715,12 @@
   justify-content: space-between;
   align-items: baseline;
   font-size: 14px;
-  color: #64748b;
+  color: rgba(255, 255, 255, 0.88);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 .summaryProgressCount {
   font-weight: 700;
-  color: #0d9488;
+  color: #5eead4;
 }
 .progressBar {
   display: flex;
@@ -689,7 +731,7 @@
   height: 12px;
   border: none;
   border-radius: 999px;
-  background: #e2e8f0;
+  background: rgba(255, 255, 255, 0.32);
   cursor: pointer;
   padding: 0;
   transition:
@@ -697,23 +739,19 @@
     transform 0.1s;
 }
 .progressSegment[data-planned="true"] {
-  background: #0d9488;
+  background: #5eead4;
 }
 .progressSegment:hover {
   transform: scaleY(1.35);
 }
 .progressSegment:focus-visible {
-  outline: 2px solid #0d9488;
+  outline: 2px solid #5eead4;
   outline-offset: 2px;
 }
 
 @media (max-width: 480px) {
-  .summary {
-    flex-direction: column;
-  }
-  .summaryImage {
-    width: 100%;
-    height: 140px;
+  .summaryTitle {
+    font-size: 20px;
   }
 }
 
