@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tripper — App Icon Options</title>
+    <style>
+      :root {
+        --teal: #0d9488;
+        --ink: #1e293b;
+        --muted: #64748b;
+        --border: #e2e8f0;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 32px;
+        font-family:
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+        color: var(--ink);
+        background: #f8fafc;
+      }
+      header {
+        max-width: 1100px;
+        margin: 0 auto 24px;
+      }
+      h1 {
+        margin: 0 0 6px;
+        font-size: 26px;
+      }
+      header p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 15px;
+      }
+      .grid {
+        max-width: 1100px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 18px;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 18px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      }
+      .previews {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 12px;
+      }
+      .previews svg {
+        display: block;
+      }
+      .lg {
+        width: 84px;
+        height: 84px;
+      }
+      .md {
+        width: 44px;
+        height: 44px;
+      }
+      .sm {
+        width: 24px;
+        height: 24px;
+      }
+      .scale-note {
+        margin-left: auto;
+        font-size: 12px;
+        color: var(--muted);
+        text-align: right;
+      }
+      .name {
+        font-size: 15px;
+        font-weight: 700;
+        margin: 0 0 4px;
+      }
+      .name .num {
+        color: var(--teal);
+      }
+      .desc {
+        font-size: 13px;
+        color: var(--muted);
+        margin: 0;
+        line-height: 1.4;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Tripper — app icon options</h1>
+      <p>
+        The letter <strong>T</strong> + a travel motif, on your teal brand tile (#0d9488). Each
+        shows at large / medium / favicon size so you can judge how it holds up when small. Tell me
+        the number(s) you like and I'll refine + export the PWA icon set (192/512).
+      </p>
+    </header>
+
+    <!-- Icon definitions (rendered via <use> at multiple sizes) -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <defs>
+        <!-- 1 Pin-stem T -->
+        <symbol id="ic1" viewBox="0 0 96 96">
+          <rect x="2" y="2" width="92" height="92" rx="22" fill="#0d9488" />
+          <rect x="26" y="27" width="44" height="11" rx="4" fill="#fff" />
+          <path d="M43 33 L53 33 L48 76 Z" fill="#fff" />
+        </symbol>
+        <!-- 2 T-in-pin -->
+        <symbol id="ic2" viewBox="0 0 96 96">
+          <rect x="2" y="2" width="92" height="92" rx="22" fill="#0d9488" />
+          <path
+            d="M48 18 C33 18 23 29 23 43 C23 60 48 80 48 80 C48 80 73 60 73 43 C73 29 63 18 48 18 Z"
+            fill="#fff"
+          />
+          <rect x="36" y="34" width="24" height="7" rx="2.5" fill="#0d9488" />
+          <rect x="44.5" y="34" width="7" height="22" rx="2.5" fill="#0d9488" />
+        </symbol>
+        <!-- 3 Waypoint T -->
+        <symbol id="ic3" viewBox="0 0 96 96">
+          <rect x="2" y="2" width="92" height="92" rx="22" fill="#0d9488" />
+          <rect x="26" y="27" width="44" height="10" rx="4" fill="#fff" />
+          <rect x="43" y="27" width="10" height="40" rx="4" fill="#fff" />
+          <circle cx="26" cy="32" r="6" fill="#fff" />
+          <circle cx="26" cy="32" r="2.6" fill="#0d9488" />
+          <circle cx="70" cy="32" r="6" fill="#fff" />
+          <circle cx="70" cy="32" r="2.6" fill="#0d9488" />
+          <circle cx="48" cy="72" r="6" fill="#fff" />
+          <circle cx="48" cy="72" r="2.6" fill="#0d9488" />
+        </symbol>
+        <!-- 4 Route T -->
+        <symbol id="ic4" viewBox="0 0 96 96">
+          <rect x="2" y="2" width="92" height="92" rx="22" fill="#0d9488" />
+          <g
+            stroke="#fff"
+            stroke-width="4"
+            stroke-linecap="round"
+            fill="none"
+            stroke-dasharray="0.5 9"
+          >
+            <path d="M27 32 H69" />
+            <path d="M48 32 V70" />
+          </g>
+          <circle cx="48" cy="72" r="5" fill="#fff" />
+        </symbol>
+        <!-- 5 Itinerary T -->
+        <symbol id="ic5" viewBox="0 0 96 96">
+          <rect x="2" y="2" width="92" height="92" rx="22" fill="#0d9488" />
+          <line
+            x1="28"
+            y1="31"
+            x2="68"
+            y2="31"
+            stroke="#fff"
+            stroke-width="4"
+            stroke-linecap="round"
+          />
+          <circle cx="28" cy="31" r="5" fill="#fff" />
+          <circle cx="68" cy="31" r="5" fill="#fff" />
+          <path
+            d="M48 31 V66"
+            stroke="#fff"
+            stroke-width="4"
+            stroke-linecap="round"
+            stroke-dasharray="0.5 9"
+            fill="none"
+          />
+          <circle cx="48" cy="72" r="5" fill="#fff" />
+        </symbol>
+        <!-- 6 Dotted-orbit T -->
+        <symbol id="ic6" viewBox="0 0 96 96">
+          <rect x="2" y="2" width="92" height="92" rx="22" fill="#0d9488" />
+          <circle
+            cx="48"
+            cy="46"
+            r="33"
+            fill="none"
+            stroke="#fff"
+            stroke-width="3"
+            stroke-dasharray="1 9"
+            stroke-linecap="round"
+          />
+          <rect x="30" y="33" width="36" height="10" rx="4" fill="#fff" />
+          <rect x="43" y="33" width="10" height="34" rx="4" fill="#fff" />
+        </symbol>
+        <!-- 7 Roundabout T -->
+        <symbol id="ic7" viewBox="0 0 96 96">
+          <rect x="2" y="2" width="92" height="92" rx="22" fill="#0d9488" />
+          <rect x="26" y="26" width="44" height="10" rx="4" fill="#fff" />
+          <rect x="43" y="26" width="10" height="44" rx="4" fill="#fff" />
+          <circle cx="48" cy="54" r="12" fill="#0d9488" stroke="#fff" stroke-width="4" />
+        </symbol>
+        <!-- 8 Compass T -->
+        <symbol id="ic8" viewBox="0 0 96 96">
+          <rect x="2" y="2" width="92" height="92" rx="22" fill="#0d9488" />
+          <circle cx="48" cy="48" r="33" fill="none" stroke="#fff" stroke-width="3" />
+          <g stroke="#fff" stroke-width="3" stroke-linecap="round">
+            <line x1="48" y1="11" x2="48" y2="18" />
+            <line x1="48" y1="78" x2="48" y2="85" />
+            <line x1="11" y1="48" x2="18" y2="48" />
+            <line x1="78" y1="48" x2="85" y2="48" />
+          </g>
+          <rect x="36" y="37" width="24" height="7" rx="3" fill="#fff" />
+          <rect x="44.5" y="37" width="7" height="22" rx="3" fill="#fff" />
+        </symbol>
+        <!-- 9 Signpost T -->
+        <symbol id="ic9" viewBox="0 0 96 96">
+          <rect x="2" y="2" width="92" height="92" rx="22" fill="#0d9488" />
+          <rect x="45" y="30" width="6" height="46" rx="3" fill="#fff" />
+          <path d="M22 30 H62 L70 37 L62 44 H22 Z" fill="#fff" />
+        </symbol>
+        <!-- 10 Globe T -->
+        <symbol id="ic10" viewBox="0 0 96 96">
+          <rect x="2" y="2" width="92" height="92" rx="22" fill="#0d9488" />
+          <g stroke="#fff" stroke-width="2.5" fill="none" opacity="0.5">
+            <circle cx="48" cy="48" r="32" />
+            <ellipse cx="48" cy="48" rx="14" ry="32" />
+            <line x1="16" y1="48" x2="80" y2="48" />
+          </g>
+          <rect x="28" y="30" width="40" height="10" rx="4" fill="#fff" />
+          <rect x="43" y="30" width="10" height="36" rx="4" fill="#fff" />
+        </symbol>
+        <!-- 11 Paper-plane T -->
+        <symbol id="ic11" viewBox="0 0 96 96">
+          <rect x="2" y="2" width="92" height="92" rx="22" fill="#0d9488" />
+          <rect x="43" y="32" width="10" height="40" rx="4" fill="#fff" />
+          <rect x="26" y="32" width="20" height="10" rx="4" fill="#fff" />
+          <path d="M52 34 L78 26 L61 47 Z" fill="#fff" />
+          <path d="M52 34 L61 47 L63 38 Z" fill="#0d9488" opacity="0.45" />
+        </symbol>
+        <!-- 12 Suitcase-handle T -->
+        <symbol id="ic12" viewBox="0 0 96 96">
+          <rect x="2" y="2" width="92" height="92" rx="22" fill="#0d9488" />
+          <path d="M40 40 V34 a8 8 0 0 1 16 0 V40" fill="none" stroke="#fff" stroke-width="5" />
+          <rect x="24" y="38" width="48" height="36" rx="6" fill="#fff" />
+          <rect x="34" y="46" width="28" height="6" rx="2" fill="#0d9488" />
+          <rect x="45" y="46" width="6" height="20" rx="2" fill="#0d9488" />
+        </symbol>
+        <!-- 13 Ticket T -->
+        <symbol id="ic13" viewBox="0 0 96 96">
+          <rect x="2" y="2" width="92" height="92" rx="22" fill="#0d9488" />
+          <rect x="18" y="33" width="60" height="30" rx="6" fill="#fff" />
+          <line
+            x1="56"
+            y1="36"
+            x2="56"
+            y2="60"
+            stroke="#0d9488"
+            stroke-width="2"
+            stroke-dasharray="2 3"
+          />
+          <circle cx="56" cy="33" r="4" fill="#0d9488" />
+          <circle cx="56" cy="63" r="4" fill="#0d9488" />
+          <rect x="26" y="41" width="22" height="5" rx="2" fill="#0d9488" />
+          <rect x="34.5" y="41" width="5" height="15" rx="2" fill="#0d9488" />
+        </symbol>
+        <!-- 14 Folded-map T -->
+        <symbol id="ic14" viewBox="0 0 96 96">
+          <rect x="2" y="2" width="92" height="92" rx="22" fill="#0d9488" />
+          <g stroke="#fff" stroke-width="2" opacity="0.22" fill="none">
+            <path d="M34 6 L30 90" />
+            <path d="M64 6 L68 90" />
+            <path d="M4 38 L92 34" />
+            <path d="M4 62 L92 66" />
+          </g>
+          <rect x="28" y="30" width="40" height="10" rx="4" fill="#fff" />
+          <rect x="43" y="30" width="10" height="36" rx="4" fill="#fff" />
+        </symbol>
+        <!-- 15 Topo-tile T -->
+        <symbol id="ic15" viewBox="0 0 96 96">
+          <rect x="2" y="2" width="92" height="92" rx="22" fill="#0d9488" />
+          <g fill="none" stroke="#fff" opacity="0.16" stroke-width="3">
+            <circle cx="48" cy="52" r="40" />
+            <circle cx="48" cy="52" r="29" />
+            <circle cx="48" cy="52" r="18" />
+          </g>
+          <rect x="28" y="30" width="40" height="10" rx="4" fill="#fff" />
+          <rect x="43" y="30" width="10" height="36" rx="4" fill="#fff" />
+        </symbol>
+        <!-- 16 Speech-pin T -->
+        <symbol id="ic16" viewBox="0 0 96 96">
+          <rect x="2" y="2" width="92" height="92" rx="22" fill="#0d9488" />
+          <rect x="22" y="24" width="52" height="38" rx="10" fill="#fff" />
+          <path d="M40 60 L48 76 L56 60 Z" fill="#fff" />
+          <rect x="34" y="33" width="28" height="7" rx="3" fill="#0d9488" />
+          <rect x="44.5" y="33" width="7" height="20" rx="3" fill="#0d9488" />
+        </symbol>
+        <!-- 17 Trail-marker T -->
+        <symbol id="ic17" viewBox="0 0 96 96">
+          <rect x="2" y="2" width="92" height="92" rx="22" fill="#0d9488" />
+          <rect x="34" y="16" width="28" height="64" rx="8" fill="#fff" />
+          <rect x="38" y="30" width="20" height="6" rx="2" fill="#0d9488" />
+          <rect x="45" y="30" width="6" height="28" rx="2" fill="#0d9488" />
+        </symbol>
+        <!-- 18 Minimal geometric T (inverted) -->
+        <symbol id="ic18" viewBox="0 0 96 96">
+          <rect
+            x="2"
+            y="2"
+            width="92"
+            height="92"
+            rx="22"
+            fill="#fff"
+            stroke="#e2e8f0"
+            stroke-width="1.5"
+          />
+          <rect x="26" y="28" width="44" height="11" rx="4" fill="#0d9488" />
+          <rect x="42.5" y="28" width="11" height="42" rx="4" fill="#0d9488" />
+        </symbol>
+      </defs>
+    </svg>
+
+    <div class="grid" id="grid"></div>
+
+    <script>
+      const icons = [
+        [
+          "1",
+          "Pin-stem T",
+          "The T's stem tapers into a map-pin point — reads instantly as a location.",
+        ],
+        ["2", "T-in-pin", "A teardrop map marker with the T knocked out of the center."],
+        ["3", "Waypoint T", "Each of the T's three tips is capped with a waypoint dot."],
+        ["4", "Route T", "The whole T drawn as a dashed travel route with a destination dot."],
+        [
+          "5",
+          "Itinerary T",
+          "Crossbar = a day's start/end stops; dashed stem drops to the destination.",
+        ],
+        [
+          "6",
+          "Dotted-orbit T",
+          "A solid T with a dashed route looping around it — journey in motion.",
+        ],
+        ["7", "Roundabout T", "The stem threads through a circular route loop."],
+        ["8", "Compass T", "T centered in a compass ring with N/E/S/W ticks."],
+        ["9", "Signpost T", "Stem = signpost pole, crossbar = a directional sign board."],
+        ["10", "Globe T", "T over a simple globe with latitude/longitude arcs."],
+        ["11", "Paper-plane T", "The crossbar's right tip lifts off into a paper airplane."],
+        [
+          "12",
+          "Suitcase-handle T",
+          "The crossbar doubles as a suitcase handle over the case body.",
+        ],
+        ["13", "Ticket T", "T on a boarding-pass shape with a perforation tear-line."],
+        ["14", "Folded-map T", "T formed over the crease lines of an unfolded paper map."],
+        ["15", "Topo-tile T", "Bold T over faint topographic contour lines — nods to OSM maps."],
+        ["16", "Speech-pin T", "T inside a rounded map-label callout bubble with a pin tail."],
+        ["17", "Trail-marker T", "T stamped like a hiking-trail blaze inside a rounded marker."],
+        [
+          "18",
+          "Minimal geometric T",
+          "Bonus: a clean teal T on white — the simplest, most scalable baseline.",
+        ],
+      ];
+      const grid = document.getElementById("grid");
+      grid.innerHTML = icons
+        .map(
+          ([num, name, desc]) => `
+        <div class="card">
+          <div class="previews">
+            <svg class="lg" viewBox="0 0 96 96"><use href="#ic${num}" /></svg>
+            <svg class="md" viewBox="0 0 96 96"><use href="#ic${num}" /></svg>
+            <svg class="sm" viewBox="0 0 96 96"><use href="#ic${num}" /></svg>
+            <span class="scale-note">84 / 44<br />24 px</span>
+          </div>
+          <p class="name"><span class="num">${num}</span> · ${name}</p>
+          <p class="desc">${desc}</p>
+        </div>`,
+        )
+        .join("");
+    </script>
+  </body>
+</html>

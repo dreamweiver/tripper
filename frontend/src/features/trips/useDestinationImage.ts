@@ -40,6 +40,9 @@ export function useDestinationImage(trip: Trip): DestinationImage {
     };
   }, [trip.id, trip.destination, trip.imageUrl, setTripImage]);
 
+  // Cached URL is used as-is. Trips resolved before the high-res change are
+  // upgraded by the tripStore persist migration (v3), which clears stale
+  // low-res image URLs so they re-resolve to the full-resolution original.
   if (trip.imageUrl) return { src: trip.imageUrl, status: "cached" };
   if (resolved) return resolved;
   return { src: genericTrip, status: "loading" };

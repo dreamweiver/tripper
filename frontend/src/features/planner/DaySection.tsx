@@ -295,6 +295,12 @@ export function DaySection({
             );
           })}
 
+          <div className={styles.addRow}>
+            <button type="button" className={styles.addRowButton} onClick={openAddPlace}>
+              ＋ Add a stop after
+            </button>
+          </div>
+
           <Suggestions
             placement="day-end"
             heading={anchor ? undefined : `Popular in ${destination}`}
@@ -305,12 +311,6 @@ export function DaySection({
             onRetry={nearby.retry}
             resetKey={anchor ? `${anchor.lat},${anchor.lon}` : destination}
           />
-
-          <div className={styles.addPlace}>
-            <button type="button" onClick={openAddPlace}>
-              + Add place
-            </button>
-          </div>
         </>
       )}
       {searchOpen && (

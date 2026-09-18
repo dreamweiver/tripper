@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { TripInput } from "@tripper/shared";
 import { useTripStore } from "../../stores/tripStore";
 import { Button } from "../../components/ui/button";
+import { Logo } from "../../components/Logo";
 import { TripList } from "./TripList";
 import { CreateTripDialog } from "./CreateTripDialog";
 import styles from "./trips.module.scss";
@@ -20,7 +21,10 @@ export function TripListScreen() {
   return (
     <main className={styles.screen}>
       <header className={styles.header}>
-        <h1 className={styles.heading}>Your trips</h1>
+        <div className={styles.brand}>
+          <Logo size={32} />
+          <h1 className={styles.heading}>Your trips</h1>
+        </div>
         <Button onClick={() => setDialogOpen(true)}>New trip</Button>
       </header>
 

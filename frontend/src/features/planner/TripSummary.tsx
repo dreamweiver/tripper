@@ -1,5 +1,6 @@
 import { tripTitle, type Trip } from "@tripper/shared";
 import { useDestinationImage } from "../trips/useDestinationImage";
+import { formatTripDates } from "../trips/formatTripDates";
 import styles from "./planner.module.scss";
 
 interface TripSummaryProps {
@@ -10,21 +11,6 @@ interface TripSummaryProps {
   onSelectDay: (dayIndex: number) => void;
 }
 
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-function fmt(date: string): { md: string; year: number } {
-  const [y, m, d] = date.split("-").map(Number);
-  return { md: `${MONTHS[(m ?? 1) - 1]} ${d ?? 1}`, year: y ?? 1970 };
-}
-
-// Human date range: "Aug 12 – Aug 16, 2026", collapsing the year when shared.
-function dateRange(startDate: string, endDate: string): string {
-  const s = fmt(startDate);
-  const e = fmt(endDate);
-  if (s.year === e.year) return `${s.md} – ${e.md}, ${e.year}`;
-  return `${s.md}, ${s.year} – ${e.md}, ${e.year}`;
-}
-
 export function TripSummary({ trip, dayCount, plannedDays, onSelectDay }: TripSummaryProps) {
   const image = useDestinationImage(trip);
   const plannedCount = plannedDays.filter(Boolean).length;
@@ -33,12 +19,13 @@ export function TripSummary({ trip, dayCount, plannedDays, onSelectDay }: TripSu
 
   return (
     <section className={styles.summary}>
-      <img className={styles.summaryImage} src={image.src} alt="" aria-hidden="true" />
+      <img className={styles.summaryBg} src={image.src} alt="" aria-hidden="true" />
+      <div className={styles.summaryScrim} aria-hidden="true" />
       <div className={styles.summaryBody}>
         <h1 className={styles.summaryTitle}>{tripTitle(trip)}</h1>
         <div className={styles.summaryMeta}>
           <span className={styles.summaryDest}>📍 {trip.destination}</span>
-          <span>🗓 {dateRange(trip.startDate, trip.endDate)}</span>
+          <span>🗓 {formatTripDates(trip.startDate, trip.endDate)}</span>
           <span>· {daysLabel}</span>
         </div>
 
