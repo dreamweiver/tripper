@@ -3,6 +3,7 @@ import styles from "./planner.module.scss";
 
 export interface SuggestionItem {
   title: string;
+  nameEn?: string;
   category: string;
   distance?: number;
   address?: string;
@@ -23,6 +24,7 @@ export function SuggestionCard({ item, onAdd }: SuggestionCardProps) {
     <div className={styles.suggestionCard}>
       <PlaceImage title={item.title} category={item.category} className={styles.suggestionImage} />
       <div className={styles.suggestionTitle}>{item.title}</div>
+      {item.nameEn && <div className={styles.suggestionNameEn}>{item.nameEn}</div>}
       <div className={styles.suggestionMeta}>{meta}</div>
       <button type="button" onClick={() => onAdd(item)}>
         + Add

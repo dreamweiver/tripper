@@ -4,6 +4,7 @@ import { PlaceImage } from "./PlaceImage";
 import { NotesList } from "./NotesList";
 import { usePlaceDescription } from "./usePlaceDescription";
 import { categoryLabel, categoryEmoji } from "./categoryImage";
+import { mealEmoji } from "./mealMeta";
 import styles from "./planner.module.scss";
 
 interface EventCardProps {
@@ -33,7 +34,15 @@ export function EventCard({ event, onEditNotes, onRemove }: EventCardProps) {
       </button>
       <div className={styles.cardBody}>
         <div className={styles.cardTitleRow}>
-          <b className={styles.cardTitle}>{event.title}</b>
+          <span className={styles.cardTitleGroup}>
+            <b className={styles.cardTitle}>{event.title}</b>
+            {event.nameEn && <span className={styles.cardTitleEn}>{event.nameEn}</span>}
+          </span>
+          {event.mealSlot && (
+            <span className={styles.mealBadge}>
+              <span aria-hidden="true">{mealEmoji(event.mealSlot)}</span> {event.mealSlot}
+            </span>
+          )}
         </div>
         <div className={styles.cardMeta}>
           {label && (

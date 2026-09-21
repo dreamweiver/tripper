@@ -20,11 +20,66 @@
 }
 .map {
   flex: 1;
+  position: relative;
   background: #eef3f7;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #8aa;
+}
+// Leaflet map fills the whole map panel. `isolation` keeps Leaflet's internal
+// z-indexes (controls/popups go up to 1000) contained so they never paint over
+// the search modal / sticky summary that live above the panel.
+.mapRoot {
+  position: absolute;
+  inset: 0;
+  isolation: isolate;
+}
+// Marker popup: a compact version of the planner place card — thumbnail
+// (photo, or category icon fallback) beside the English-first name and a
+// category chip.
+.mapPopup {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  min-width: 180px;
+}
+.mapPopupImage {
+  width: 56px;
+  height: 56px;
+  flex: none;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #f1f5f9;
+}
+.mapPopupBody {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.mapPopupTitle {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #1a1a1a;
+}
+.mapPopupSub {
+  font-size: 12px;
+  color: #8a8a8a;
+}
+.mapPopupChip {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: 1px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #475569;
+  font-weight: 600;
+  font-size: 12px;
 }
 .tabs {
   display: flex;
@@ -104,6 +159,34 @@
 .dayHeader[data-open="false"]:hover {
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
   transform: translateY(-1px);
+}
+// Weekend day headers get a warm amber accent so Sat/Sun stand out from the
+// cool teal theme. The tint + inset accent bar apply to the collapsed "card"
+// state; the Weekend pill (rendered regardless) carries the cue once expanded.
+.dayHeader[data-weekend="true"][data-open="false"] {
+  background: #fffbeb;
+  border-color: #fde68a;
+  box-shadow:
+    inset 3px 0 0 #f59e0b,
+    0 3px 10px rgba(0, 0, 0, 0.1);
+}
+.dayHeader[data-weekend="true"][data-open="false"]:hover {
+  border-color: #fcd34d;
+  box-shadow:
+    inset 3px 0 0 #f59e0b,
+    0 6px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
+}
+.weekendTag {
+  flex: none;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #fef3c7;
+  color: #b45309;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: none;
 }
 .dayHeaderChevron {
   flex: none;
@@ -237,6 +320,34 @@
   font-size: 18px;
   font-weight: 600;
   line-height: 1.25;
+}
+.cardTitleGroup {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+}
+.cardTitleEn {
+  font-size: 14px;
+  font-weight: 500;
+  color: #0d9488;
+  line-height: 1.25;
+}
+// Meal slot pill (e.g. "🥐 Breakfast") on an eatery that filled a predefined
+// meal anchor. margin-right keeps it clear of the absolute × remove button.
+.mealBadge {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-right: 16px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #f0fdfa;
+  color: #0f766e;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
 }
 .cardRemove {
   position: absolute;
@@ -456,6 +567,14 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.suggestionNameEn {
+  font-size: 13px;
+  font-weight: 500;
+  color: #0d9488;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .suggestionMeta {
   font-size: 13px;
   opacity: 0.65;
@@ -602,6 +721,11 @@
   font-size: 16px;
   font-weight: 600;
   color: #1a1a1a;
+}
+.resultNameEn {
+  font-size: 14px;
+  font-weight: 500;
+  color: #0d9488;
 }
 .resultAddress {
   font-size: 14px;
@@ -777,5 +901,119 @@
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+// Trip options kebab menu, overlaid at the top-right of the sticky summary.
+.summaryMenu {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 3;
+}
+.menuButton {
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.45);
+  color: #fff;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(2px);
+  transition: background 0.12s;
+}
+.menuButton:hover {
+  background: rgba(15, 23, 42, 0.7);
+}
+
+// Print-only itinerary document. Hidden on screen; the print stylesheet swaps
+// the interactive planner (.screenOnly) out and this in.
+.screenOnly {
+  height: 100%;
+}
+.printOnly {
+  display: none;
+}
+.printHeader {
+  margin-bottom: 16px;
+}
+.printTitle {
+  font-size: 22px;
+  font-weight: 800;
+  margin: 0;
+}
+.printMeta {
+  font-size: 13px;
+  color: #444;
+  margin: 4px 0 0;
+}
+.printDay {
+  margin-bottom: 14px;
+}
+.printDayHeading {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 6px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 3px;
+}
+.printEmpty {
+  font-size: 13px;
+  color: #888;
+  margin: 0;
+}
+.printStops {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.printStop {
+  display: flex;
+  gap: 10px;
+  padding: 4px 0;
+}
+.printTime {
+  flex: none;
+  width: 52px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0d9488;
+}
+.printStopBody {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.printStopName {
+  font-size: 14px;
+}
+.printStopEn {
+  color: #0d9488;
+}
+.printStopCat {
+  color: #666;
+}
+.printStopAddr {
+  font-size: 12px;
+  color: #777;
+}
+.printNotes {
+  margin: 2px 0 0;
+  padding-left: 18px;
+  font-size: 12px;
+  color: #555;
+}
+
+@media print {
+  .screenOnly {
+    display: none !important;
+  }
+  .printOnly {
+    display: block;
   }
 }

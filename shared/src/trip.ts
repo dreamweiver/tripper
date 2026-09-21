@@ -61,3 +61,20 @@ function ymd(date: string): [number, number, number] {
   const [y, m, d] = date.split("-").map(Number);
   return [y ?? 1970, (m ?? 1) - 1, d ?? 1];
 }
+
+/** The YYYY-MM-DD calendar date `n` days after `date` (n may be negative). */
+export function addDays(date: string, n: number): string {
+  const [y, m, d] = ymd(date);
+  const t = new Date(Date.UTC(y, m, d + n));
+  const yy = t.getUTCFullYear();
+  const mm = String(t.getUTCMonth() + 1).padStart(2, "0");
+  const dd = String(t.getUTCDate()).padStart(2, "0");
+  return `${yy}-${mm}-${dd}`;
+}
+
+/** Whole days from `start` to `date` (can be negative); start→start is 0. */
+export function daysBetween(start: string, date: string): number {
+  const a = Date.UTC(...ymd(start));
+  const b = Date.UTC(...ymd(date));
+  return Math.round((b - a) / 86_400_000);
+}

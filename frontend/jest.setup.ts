@@ -1,5 +1,15 @@
 import "@testing-library/jest-dom";
 
+// jsdom does not implement ResizeObserver, which the trip map's controller uses
+// to refit the viewport. A no-op stub is enough for components under test.
+if (typeof globalThis.ResizeObserver === "undefined") {
+  globalThis.ResizeObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  };
+}
+
 // jest-environment-jsdom does not provide TextEncoder/TextDecoder, which
 // react-router v7 relies on at import time. Polyfill from Node's util module.
 if (typeof globalThis.TextEncoder === "undefined") {

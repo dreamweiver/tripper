@@ -1,3 +1,4 @@
+import { forwardRef, type ReactNode } from "react";
 import { tripTitle, type Trip } from "@tripper/shared";
 import { useDestinationImage } from "../trips/useDestinationImage";
 import { formatTripDates } from "../trips/formatTripDates";
@@ -9,18 +10,26 @@ interface TripSummaryProps {
   // One flag per day: true when the day has at least one real place.
   plannedDays: boolean[];
   onSelectDay: (dayIndex: number) => void;
+  // Optional overlay slot (top-right), e.g. the trip options menu.
+  menu?: ReactNode;
 }
 
-export function TripSummary({ trip, dayCount, plannedDays, onSelectDay }: TripSummaryProps) {
+// forwardRef exposes the sticky root <section> so the planner can measure its
+// height and offset day-scroll targets to land just below it.
+export const TripSummary = forwardRef<HTMLElement, TripSummaryProps>(function TripSummary(
+  { trip, dayCount, plannedDays, onSelectDay, menu },
+  ref,
+) {
   const image = useDestinationImage(trip);
   const plannedCount = plannedDays.filter(Boolean).length;
   const pct = dayCount > 0 ? Math.round((plannedCount / dayCount) * 100) : 0;
   const daysLabel = dayCount === 1 ? "1 day" : `${dayCount} days`;
 
   return (
-    <section className={styles.summary}>
+    <section ref={ref} className={styles.summary}>
       <img className={styles.summaryBg} src={image.src} alt="" aria-hidden="true" />
       <div className={styles.summaryScrim} aria-hidden="true" />
+      {menu && <div className={styles.summaryMenu}>{menu}</div>}
       <div className={styles.summaryBody}>
         <h1 className={styles.summaryTitle}>{tripTitle(trip)}</h1>
         <div className={styles.summaryMeta}>
@@ -60,4 +69,4 @@ export function TripSummary({ trip, dayCount, plannedDays, onSelectDay }: TripSu
       </div>
     </section>
   );
-}
+});

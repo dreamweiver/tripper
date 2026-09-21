@@ -1,4 +1,5 @@
 import type { TimelineEvent } from "@tripper/shared";
+import { mealEmoji } from "./mealMeta";
 import styles from "./planner.module.scss";
 
 interface MealAnchorProps {
@@ -6,14 +7,8 @@ interface MealAnchorProps {
   onAddEatery: (eventId: string) => void;
 }
 
-const MEAL_EMOJI: Record<string, string> = {
-  Breakfast: "🥐",
-  Lunch: "🥗",
-  Dinner: "🍷",
-};
-
 export function MealAnchor({ event, onAddEatery }: MealAnchorProps) {
-  const emoji = MEAL_EMOJI[event.title] ?? "🍽";
+  const emoji = mealEmoji(event.title);
   return (
     <button type="button" className={styles.mealAnchor} onClick={() => onAddEatery(event.id)}>
       <span className={styles.mealAnchorLabel}>

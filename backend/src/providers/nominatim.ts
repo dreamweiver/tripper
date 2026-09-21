@@ -3,6 +3,7 @@ import type { PlaceResult } from "@tripper/shared";
 interface NominatimRow {
   display_name: string;
   name?: string;
+  namedetails?: Record<string, string>;
   lat: string;
   lon: string;
   category?: string;
@@ -50,6 +51,7 @@ export async function searchPlaces(
     q: query,
     format: "jsonv2",
     addressdetails: "1",
+    namedetails: "1",
     "accept-language": "en",
     limit: "8",
   });
@@ -73,9 +75,14 @@ export async function searchPlaces(
   const rows = (await res.json()) as NominatimRow[];
   return rows.map((r) => {
     const { name, address } = splitLabel(r.display_name, r.name);
+    // Surface the English name from namedetails when present and distinct, so a
+    // local-language result also shows its English equivalent without replacing it.
+    const en = r.namedetails?.["name:en"]?.trim() || r.namedetails?.["int_name"]?.trim();
+    const nameEn = en && en !== name ? en : undefined;
     return {
       title: r.display_name,
       name,
+      ...(nameEn ? { nameEn } : {}),
       ...(address ? { address } : {}),
       lat: Number(r.lat),
       lon: Number(r.lon),

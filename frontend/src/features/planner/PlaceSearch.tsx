@@ -1,8 +1,14 @@
 import { useEffect, useState } from "react";
 import type { PlaceResult } from "@tripper/shared";
 import { usePlaceSearch } from "./hooks/usePlaceSearch";
+import { useDebouncedValue } from "./hooks/useDebouncedValue";
 import { Spinner } from "./Spinner";
 import styles from "./planner.module.scss";
+
+// Compact distance label: "120 m" under 1 km, "1.2 km" beyond.
+function formatDistance(metres: number): string {
+  return metres < 1000 ? `${metres} m` : `${(metres / 1000).toFixed(1)} km`;
+}
 
 interface PlaceSearchProps {
   onClose: () => void;
@@ -25,6 +31,14 @@ export function PlaceSearch({
 }: PlaceSearchProps) {
   const { results, loading, error, searched, search } = usePlaceSearch(initialResults, bias);
   const [query, setQuery] = useState("");
+  // Type-ahead: run the search a short beat after the user stops typing (min 2
+  // chars) so results update as they type without a request per keystroke. The
+  // hook dedupes, so pressing Enter/Search first won't cause a second fetch.
+  const debouncedQuery = useDebouncedValue(query, 350);
+  useEffect(() => {
+    if (debouncedQuery.trim().length < 2) return;
+    void search(debouncedQuery);
+  }, [debouncedQuery, search]);
   // Seed fetch still running and the user hasn't searched or received any seed
   // results yet — show a spinner in place of the (empty) result list.
   const seeding = initialLoading && !searched && results.length === 0;
@@ -95,7 +109,14 @@ export function PlaceSearch({
               <li key={`${r.name}-${r.lat}-${r.lon}`}>
                 <button type="button" className={styles.resultRow} onClick={() => onPick(r)}>
                   <span className={styles.resultName}>{r.name}</span>
-                  {r.address && <span className={styles.resultAddress}>{r.address}</span>}
+                  {r.nameEn && <span className={styles.resultNameEn}>{r.nameEn}</span>}
+                  {(r.address || r.distance !== undefined) && (
+                    <span className={styles.resultAddress}>
+                      {[r.distance !== undefined ? formatDistance(r.distance) : null, r.address]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </span>
+                  )}
                 </button>
               </li>
             ))}

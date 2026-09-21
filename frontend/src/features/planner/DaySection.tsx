@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import type { PlaceResult } from "@tripper/shared";
+import { isPredefinedMeal } from "@tripper/shared";
 import { useTripStore } from "../../stores/tripStore";
 import { usePlannerEvents } from "./hooks/usePlannerEvents";
 import { useNearbySuggestions, type SuggestionAnchor } from "./hooks/useNearbySuggestions";
@@ -19,6 +20,7 @@ interface DaySectionProps {
   tripId: string;
   dayIndex: number;
   date: string;
+  weekend: boolean;
   destination: string;
   expanded: boolean;
   onToggle: () => void;
@@ -33,6 +35,7 @@ export function DaySection({
   tripId,
   dayIndex,
   date,
+  weekend,
   destination,
   expanded,
   onToggle,
@@ -133,6 +136,7 @@ export function DaySection({
   const placeFromResult = (r: PlaceResult) => ({
     kind: "place" as const,
     title: r.name || r.title,
+    ...(r.nameEn ? { nameEn: r.nameEn } : {}),
     lat: r.lat,
     lon: r.lon,
     ...(r.address ? { address: r.address } : {}),
@@ -143,8 +147,16 @@ export function DaySection({
   const handlePick = (r: PlaceResult) => {
     if (replaceMealId) {
       // Convert the meal anchor in place into the chosen eatery, keeping its
-      // slot (order) and scheduled time so it takes over the placeholder.
-      updateEvent(replaceMealId, placeFromResult(r));
+      // slot (order) and scheduled time so it takes over the placeholder. If the
+      // anchor was a predefined slot (Breakfast/Lunch/Dinner), tag the eatery
+      // with that slot so the card shows a matching meal badge; a manually added
+      // anchor (e.g. "Brunch") gets no badge.
+      const meal = events.find((e) => e.id === replaceMealId);
+      const mealSlot = isPredefinedMeal(meal?.title) ? meal?.title : undefined;
+      updateEvent(replaceMealId, {
+        ...placeFromResult(r),
+        ...(mealSlot ? { mealSlot } : {}),
+      });
     } else if (insertContext) {
       insertEventBetween(
         tripId,
@@ -204,7 +216,9 @@ export function DaySection({
           eateries.map((e) => ({
             title: e.title,
             name: e.name,
+            ...(e.nameEn ? { nameEn: e.nameEn } : {}),
             ...(e.address ? { address: e.address } : {}),
+            ...(e.distance !== undefined ? { distance: e.distance } : {}),
             lat: e.lat,
             lon: e.lon,
             category: e.category,
@@ -225,6 +239,7 @@ export function DaySection({
       dayIndex,
       kind: "place",
       title: item.title,
+      ...(item.nameEn ? { nameEn: item.nameEn } : {}),
       lat: item.lat,
       lon: item.lon,
       ...(item.address ? { address: item.address } : {}),
@@ -247,6 +262,7 @@ export function DaySection({
       <DayHeader
         dayIndex={dayIndex}
         date={date}
+        weekend={weekend}
         stopCount={stopCount}
         expanded={expanded}
         onToggle={onToggle}

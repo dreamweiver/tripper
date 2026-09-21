@@ -38,6 +38,7 @@ export function useNearbySuggestions(anchor: SuggestionAnchor | null): NearbySta
           setItems(
             nearby.map((n) => ({
               title: n.title,
+              ...(n.nameEn ? { nameEn: n.nameEn } : {}),
               category: n.category,
               distance: n.distance,
               ...(n.address ? { address: n.address } : {}),
@@ -51,6 +52,7 @@ export function useNearbySuggestions(anchor: SuggestionAnchor | null): NearbySta
           setItems(
             popular.map((p) => ({
               title: p.title,
+              ...(p.nameEn ? { nameEn: p.nameEn } : {}),
               category: p.category,
               ...(p.address ? { address: p.address } : {}),
               lat: p.lat,

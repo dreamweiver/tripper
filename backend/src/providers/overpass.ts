@@ -51,6 +51,15 @@ function addressOf(tags: Record<string, string>): string | undefined {
   return partial.length ? partial.join(", ") : undefined;
 }
 
+// The English equivalent of a place's name, when OSM has one. Prefers the
+// explicit `name:en` tag, falling back to `int_name` (the international /
+// romanized name). Returns undefined when absent or identical to the local
+// name, so callers only ever show it as a genuine, non-duplicate alternative.
+function englishNameOf(tags: Record<string, string>, localName: string): string | undefined {
+  const en = tags["name:en"]?.trim() || tags["int_name"]?.trim();
+  return en && en !== localName ? en : undefined;
+}
+
 interface NearbyOptions {
   eateries?: boolean;
 }
@@ -93,9 +102,11 @@ export async function nearbyPlaces(
       if (elLat === undefined || elLon === undefined || !name) return undefined;
       const tags = el.tags ?? {};
       const address = addressOf(tags);
+      const nameEn = englishNameOf(tags, name);
       return {
         title: name,
         name,
+        ...(nameEn ? { nameEn } : {}),
         ...(address ? { address } : {}),
         lat: elLat,
         lon: elLon,
