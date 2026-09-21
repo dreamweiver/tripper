@@ -7,6 +7,8 @@ export interface TimelineEvent {
   order: number;
   kind: EventKind;
   title: string;
+  nameEn?: string; // English equivalent of a local-language place name, when known
+  mealSlot?: string; // predefined meal this stop fills (Breakfast/Lunch/Dinner), if any
   time?: string;
   lat?: number;
   lon?: number;
@@ -28,6 +30,15 @@ const MEAL_SEEDS: MealSeed[] = [
   { title: "Lunch", time: "12:30" },
   { title: "Dinner", time: "20:30" },
 ];
+
+// The titles of the auto-seeded meal anchors. Used to tell a predefined slot
+// (Breakfast/Lunch/Dinner) apart from a manually added anchor (e.g. "Brunch"),
+// so only predefined slots surface a meal badge once filled with an eatery.
+export const PREDEFINED_MEAL_TITLES: readonly string[] = MEAL_SEEDS.map((s) => s.title);
+
+export function isPredefinedMeal(title: string | undefined): boolean {
+  return title !== undefined && PREDEFINED_MEAL_TITLES.includes(title);
+}
 
 export function seedMeals(tripId: string, dayIndex: number): TimelineEvent[] {
   return MEAL_SEEDS.map((seed, i) => ({

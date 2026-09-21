@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { Trip, TripInput, TimelineEvent } from "@tripper/shared";
-import { seedMeals, insertOrder } from "@tripper/shared";
+import { seedMeals, insertOrder, tripDayCount, addDays, daysBetween } from "@tripper/shared";
 
 type NewEvent = Omit<TimelineEvent, "id" | "order"> & { order?: number };
 type InsertEvent = Omit<TimelineEvent, "id" | "order" | "tripId" | "dayIndex">;
@@ -12,6 +12,14 @@ interface TripState {
   addTrip: (input: TripInput) => Trip;
   removeTrip: (id: string) => void;
   setTripImage: (id: string, imageUrl: string) => void;
+  /**
+   * Change the trip's date range. Events keep their calendar date (start + dayIndex):
+   * they reflow to new day indices, and any that fall outside the new range are dropped.
+   * Newly-added days that end up empty get their meal anchors seeded.
+   */
+  setTripDates: (id: string, startDate: string, endDate: string) => void;
+  /** Delete one day: remove its events, shift later days down by one, and shrink the range. */
+  deleteDay: (id: string, dayIndex: number) => void;
   getTrip: (id: string) => Trip | undefined;
   seedMealsForTrip: (tripId: string, dayCount: number) => void;
   addEvent: (event: NewEvent) => TimelineEvent;
@@ -69,6 +77,55 @@ export const useTripStore = create<TripState>()(
         })),
       setTripImage: (id, imageUrl) =>
         set((s) => ({ trips: s.trips.map((t) => (t.id === id ? { ...t, imageUrl } : t)) })),
+
+      setTripDates: (id, startDate, endDate) =>
+        set((s) => {
+          const trip = s.trips.find((t) => t.id === id);
+          if (!trip) return {};
+          const oldStart = trip.startDate;
+          const newCount = tripDayCount(startDate, endDate);
+          // Reflow this trip's events by calendar date; keep the rest untouched.
+          const kept: TimelineEvent[] = [];
+          for (const e of s.events) {
+            if (e.tripId !== id) {
+              kept.push(e);
+              continue;
+            }
+            const idx = daysBetween(startDate, addDays(oldStart, e.dayIndex));
+            if (idx >= 0 && idx < newCount) kept.push({ ...e, dayIndex: idx });
+            // Events outside the new range are dropped (their day was trimmed away).
+          }
+          // Seed meal anchors for any day that ended up with no events.
+          const present = new Set(kept.filter((e) => e.tripId === id).map((e) => e.dayIndex));
+          const seeded: TimelineEvent[] = [];
+          for (let d = 0; d < newCount; d++) {
+            if (!present.has(d)) seeded.push(...seedMeals(id, d));
+          }
+          return {
+            trips: s.trips.map((t) => (t.id === id ? { ...t, startDate, endDate } : t)),
+            events: [...kept, ...seeded],
+          };
+        }),
+
+      deleteDay: (id, dayIndex) =>
+        set((s) => {
+          const trip = s.trips.find((t) => t.id === id);
+          if (!trip) return {};
+          const count = tripDayCount(trip.startDate, trip.endDate);
+          if (count <= 1) return {}; // a trip keeps at least one day
+          const events = s.events
+            .filter((e) => !(e.tripId === id && e.dayIndex === dayIndex))
+            .map((e) =>
+              e.tripId === id && e.dayIndex > dayIndex ? { ...e, dayIndex: e.dayIndex - 1 } : e,
+            );
+          // One fewer day → last index is count-2, so endDate = start + (count-2).
+          const endDate = addDays(trip.startDate, count - 2);
+          return {
+            trips: s.trips.map((t) => (t.id === id ? { ...t, endDate } : t)),
+            events,
+          };
+        }),
+
       getTrip: (id) => get().trips.find((t) => t.id === id),
 
       seedMealsForTrip: (tripId, dayCount) => {

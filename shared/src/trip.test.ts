@@ -1,4 +1,11 @@
-import { tripInputSchema, tripTitle, isTodayOrFuture, tripDayCount } from "./trip.js";
+import {
+  tripInputSchema,
+  tripTitle,
+  isTodayOrFuture,
+  tripDayCount,
+  addDays,
+  daysBetween,
+} from "./trip.js";
 
 const today = new Date();
 const iso = (d: Date) =>
@@ -106,5 +113,38 @@ describe("isTodayOrFuture", () => {
   });
   it("rejects a past date", () => {
     expect(isTodayOrFuture(plusDays(-1))).toBe(false);
+  });
+});
+
+describe("addDays", () => {
+  it("adds days within a month", () => {
+    expect(addDays("2999-01-01", 4)).toBe("2999-01-05");
+  });
+  it("returns the same date for n = 0", () => {
+    expect(addDays("2999-01-01", 0)).toBe("2999-01-01");
+  });
+  it("rolls over a month boundary", () => {
+    expect(addDays("2999-01-31", 1)).toBe("2999-02-01");
+  });
+  it("goes backwards across a year boundary for negative n", () => {
+    expect(addDays("2999-01-01", -1)).toBe("2998-12-31");
+  });
+});
+
+describe("daysBetween", () => {
+  it("counts whole days forward", () => {
+    expect(daysBetween("2999-01-01", "2999-01-05")).toBe(4);
+  });
+  it("is 0 for the same date", () => {
+    expect(daysBetween("2999-01-01", "2999-01-01")).toBe(0);
+  });
+  it("is negative when the target is earlier", () => {
+    expect(daysBetween("2999-01-05", "2999-01-01")).toBe(-4);
+  });
+  it("counts across a month boundary", () => {
+    expect(daysBetween("2999-01-30", "2999-02-02")).toBe(3);
+  });
+  it("round-trips with addDays", () => {
+    expect(addDays("2999-01-10", daysBetween("2999-01-10", "2999-01-22"))).toBe("2999-01-22");
   });
 });

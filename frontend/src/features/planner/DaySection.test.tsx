@@ -39,6 +39,7 @@ test("adding a place via search appends it to the day", async () => {
       tripId="t1"
       dayIndex={0}
       date="WED AUG 12"
+      weekend={false}
       destination="Paris"
       expanded
       onToggle={() => {}}
@@ -90,6 +91,7 @@ test("tapping a meal anchor opens the modal prefilled with nearby eateries", asy
       tripId="t1"
       dayIndex={0}
       date="WED AUG 12"
+      weekend={false}
       destination="Paris"
       expanded
       onToggle={() => {}}

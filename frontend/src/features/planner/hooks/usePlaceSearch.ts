@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import type { PlaceResult } from "@tripper/shared";
 import { fetchSearch } from "../api";
 
@@ -36,11 +36,21 @@ export function usePlaceSearch(
     }
   }
 
+  // Monotonic request id: type-ahead can fire several searches in flight at
+  // once, so we only apply the response of the latest and drop stale ones.
+  const reqId = useRef(0);
+  // Last query we actually ran, so the debounced effect and the Enter/submit
+  // path don't refetch the same term. Reset on error so a retry can re-run it.
+  const lastQuery = useRef<string | null>(null);
+
   const biasLat = bias?.lat;
   const biasLon = bias?.lon;
   const search = useCallback(
     async (query: string) => {
-      if (!query.trim()) return;
+      const q = query.trim();
+      if (!q || q === lastQuery.current) return;
+      lastQuery.current = q;
+      const id = ++reqId.current;
       setManualSearchRun(true);
       setLoading(true);
       setError(null);
@@ -50,12 +60,16 @@ export function usePlaceSearch(
           biasLat !== undefined && biasLon !== undefined
             ? { lat: biasLat, lon: biasLon }
             : undefined;
-        setResults(await fetchSearch(query.trim(), bias));
+        const found = await fetchSearch(q, bias);
+        if (id === reqId.current) setResults(found);
       } catch {
-        setError("Couldn't search right now, try again");
-        setResults([]);
+        if (id === reqId.current) {
+          setError("Couldn't search right now, try again");
+          setResults([]);
+          lastQuery.current = null; // allow the same term to be retried
+        }
       } finally {
-        setLoading(false);
+        if (id === reqId.current) setLoading(false);
       }
     },
     [biasLat, biasLon],
